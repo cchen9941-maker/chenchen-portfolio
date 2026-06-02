@@ -26,8 +26,8 @@
 html{font-size:16px;-webkit-font-smoothing:antialiased;scroll-behavior:smooth;scroll-padding-top:80px}
 body{
   font-family:'Inter',-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;
-  background:#070912;color:var(--ink);line-height:1.7;overflow-x:hidden;
-}
+  background:#070912;color:var(--ink);line-height:1.7;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+@media(max-width:767px){body{-webkit-tap-highlight-color:transparent}}
 #auroraCanvas{position:fixed;inset:0;pointer-events:none;z-index:0}
 body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 50% 80%,rgba(10,12,26,.65),transparent 60%),radial-gradient(ellipse at 20% 20%,rgba(10,15,30,.45),transparent 50%);mix-blend-mode:multiply}
 ::selection{background:rgba(232,200,96,.32);color:var(--paper)}
@@ -481,7 +481,7 @@ footer .ft-icon{margin-bottom:8px;opacity:.18}
 
 @media(min-width:768px){.card-grid{grid-template-columns:repeat(2,1fr)}.magic-bento-card.card-wide{grid-column:span 2}.magic-bento-card.card-s2{grid-column:span 2}}
 @media(min-width:1100px){.card-grid{grid-template-columns:repeat(4,1fr);gap:16px}.magic-bento-card.card-s2{grid-column:span 2}}
-@media(max-width:767px){.card-grid{padding:12px 16px;gap:10px}.magic-bento-card{padding:16px 18px}.magic-bento-card.card-wide,.magic-bento-card.card-s2{grid-column:span 1}}
+@media(max-width:767px){.card-grid{padding:60px 10px 16px;gap:10px;grid-template-columns:1fr}.magic-bento-card{padding:16px 14px;will-change:auto;transform:none!important}.magic-bento-card.card-wide,.magic-bento-card.card-s2{grid-column:span 1}.global-spotlight{display:none}.particle{display:none!important}.player-frame.ratio-3-4{max-width:260px}.hero{grid-template-columns:1fr!important;gap:18px;text-align:center}.hero-metrics{grid-template-columns:repeat(2,1fr)}.strength-grid{grid-template-columns:1fr}.social-grid{grid-template-columns:repeat(2,1fr)}.portfolio-player{flex-direction:column!important}.work-data-panel{max-width:none}}
 </style>
 </head>
 <body>
@@ -1202,14 +1202,16 @@ requestAnimationFrame(animate);
 <script>
 // ===== MAGIC BENTO EFFECTS ENHANCED =====
 const GLOW_COLOR='196,138,48';
-const SPOTLIGHT_RADIUS=740;
+const isTouchDevice=window.innerWidth<768||('ontouchstart' in window);
+const SPOTLIGHT_RADIUS=isTouchDevice?0:740;
 const PROXIMITY=SPOTLIGHT_RADIUS*.5;
 const FADE_DIST=SPOTLIGHT_RADIUS*.75;
 const grid=document.getElementById('bentoGrid');
 const cards=grid.querySelectorAll('.magic-bento-card--border-glow');
 
-// --- Global Spotlight (enhanced) ---
+// --- Global Spotlight (desktop only) ---
 const spotlight=document.createElement('div');
+if(isTouchDevice){spotlight.style.display='none'}
 spotlight.className='global-spotlight';
 spotlight.style.cssText=`width:${SPOTLIGHT_RADIUS*2}px;height:${SPOTLIGHT_RADIUS*2}px`;
 document.body.appendChild(spotlight);
@@ -1298,8 +1300,10 @@ cards.forEach(card=>{
     activeParticles.length=0;
   });
 
-  // --- Physics Engine (RAF-throttled) ---
-  const REPEL_ZONE=60, ATTRACT_ZONE=280, MAX_FORCE=14;
+  // --- Physics Engine (RAF-throttled, desktop only) ---
+  const isMobile=window.innerWidth<768;
+  if(isMobile){cards.forEach(c=>c.style.willChange='auto')}
+  const REPEL_ZONE=isMobile?0:60, ATTRACT_ZONE=isMobile?0:280, MAX_FORCE=isMobile?0:14;
   let mouseX=0,mouseY=0,isInsideGrid=true,rafId=null;
   const cardTargets=new Map();
   cards.forEach(c=>cardTargets.set(c,{x:0,y:0,rx:0,ry:0}));
@@ -1373,8 +1377,9 @@ cards.forEach(card=>{
 });
 </script>
 <script>
-// ===== SPLASH CURSOR (WebGL Fluid) =====
+// ===== SPLASH CURSOR (WebGL Fluid, desktop only) =====
 (function(){
+if(window.innerWidth<768){document.getElementById('fluidCanvas').style.display='none';return}
 const canvas=document.getElementById('fluidCanvas');if(!canvas)return;
 const C={SR:128,DR:800,CR:512,DD:3.5,VD:2,PR:0.1,PI:20,CU:3,SR2:0.2,SF:6000,SH:true,CUS:10,TR:true,RM:false,CL:'#c48a30'};
 function PP(){this.id=-1;this.tx=0;this.ty=0;this.ptx=0;this.pty=0;this.dx=0;this.dy=0;this.down=false;this.moved=false;this.color=[0,0,0]}let pts=[new PP()];
