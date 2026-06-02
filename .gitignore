@@ -1,6 +1,8 @@
 temp/
 profolio/
 Aesthetic/
+fonts/
+*.ttf
 新建 文本文档.txt
 社交媒体网址.txt
 .DS_Store
@@ -12,3 +14,4 @@ package-lock.json
 vite.config.js
 src/
 .vite/
+audio/Teeny Tiny Hooligans (5).mp3
