@@ -1,12 +1,14 @@
 temp/
-Aesthetic/
-fonts/
-*.ttf
-audio/Teeny Tiny Hooligans (5).mp3
 profolio/
-background/
-UI/
-sound/
+Aesthetic/
 新建 文本文档.txt
+社交媒体网址.txt
 .DS_Store
 Thumbs.db
+node_modules/
+dist/
+package.json
+package-lock.json
+vite.config.js
+src/
+.vite/

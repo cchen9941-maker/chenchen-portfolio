@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="陈晨 Chenchen — 全平台自媒体运营 / 电影宣发剪辑 / 视觉中国签约摄影师。合作环球影业、万达电影、猫眼、网易云音乐。">
 <title>陈晨 Chenchen · 内容创作者 & 电影剪辑</title>
+<script type="importmap">
+{"imports":{"ogl":"https://cdn.jsdelivr.net/npm/ogl@1.0.11/src/index.js"}}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -22,13 +26,12 @@
 html{font-size:16px;-webkit-font-smoothing:antialiased;scroll-behavior:smooth;scroll-padding-top:80px}
 body{
   font-family:'Inter',-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;
-  background:var(--sky-top);color:var(--ink);line-height:1.7;overflow-x:hidden;cursor:none;
+  background:#070912;color:var(--ink);line-height:1.7;overflow-x:hidden;
 }
-body::before{content:'';position:fixed;inset:-10%;pointer-events:none;z-index:0;background:linear-gradient(180deg,rgba(5,8,18,.25),rgba(5,8,18,.78)),url('bg/background.png') center/cover no-repeat;filter:blur(6px) saturate(1.1) contrast(1.02);animation:bgDrift 32s ease-in-out infinite alternate}
-body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle at 50% 32%,rgba(255,198,132,.18),transparent 18%),radial-gradient(circle at 18% 12%,rgba(255,224,142,.08),transparent 22%),linear-gradient(90deg,rgba(4,6,18,.82) 0%,rgba(4,6,18,.42) 35%,rgba(4,6,18,.48) 65%,rgba(4,6,18,.86) 100%),repeating-linear-gradient(92deg,rgba(255,255,255,.018) 0 1px,transparent 1px 16px);mix-blend-mode:screen}
-@keyframes bgDrift{from{transform:scale(1.04) translate3d(-8px,-4px,0)}to{transform:scale(1.08) translate3d(8px,6px,0)}}
+#auroraCanvas{position:fixed;inset:0;pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 50% 80%,rgba(10,12,26,.65),transparent 60%),radial-gradient(ellipse at 20% 20%,rgba(10,15,30,.45),transparent 50%);mix-blend-mode:multiply}
 ::selection{background:rgba(232,200,96,.32);color:var(--paper)}
-a,button,.page-card,.stamp,.hero-stat,.cc-item,.platform-item{cursor:none}
+a,button,.page-card,.stamp,.hero-stat,.cc-item,.platform-item{cursor:pointer}
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:var(--sky-top)}
 ::-webkit-scrollbar-thumb{background:var(--ink-subtle);border-radius:2px}
@@ -37,13 +40,7 @@ a,button,.page-card,.stamp,.hero-stat,.cc-item,.platform-item{cursor:none}
 #dust{position:fixed;inset:0;pointer-events:none;z-index:9998}
 
 /* ===== CUSTOM CURSOR ===== */
-.cursor-dot,.cursor-ring{position:fixed;left:0;top:0;pointer-events:none;z-index:10000;opacity:0;transform:translate3d(-50%,-50%,0);transition:opacity .25s ease, width .22s ease, height .22s ease, background .22s ease, border-color .22s ease, mix-blend-mode .22s ease}
-.cursor-dot{width:9px;height:9px;border-radius:50%;background:rgba(255,236,178,.95);box-shadow:0 0 12px rgba(255,222,150,.95),0 0 28px rgba(255,222,150,.35)}
-.cursor-ring{width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,236,178,.42);box-shadow:0 0 22px rgba(255,222,150,.16)}
-body.cursor-ready .cursor-dot,body.cursor-ready .cursor-ring{opacity:1}
-body.cursor-hover .cursor-dot{width:7px;height:7px;background:rgba(255,255,255,.28);box-shadow:0 0 10px rgba(255,255,255,.55);mix-blend-mode:difference}
-body.cursor-hover .cursor-ring{width:58px;height:58px;border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.08);backdrop-filter:blur(3px);mix-blend-mode:difference}
-@media (hover:none),(pointer:coarse){body{cursor:auto}.cursor-dot,.cursor-ring{display:none}a,button,.page-card,.stamp,.hero-stat,.cc-item,.platform-item{cursor:auto}}
+.cursor-dot,.cursor-ring{display:none!important}
 
 /* ===== NIGHT CITYSCAPE ===== */
 .city{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
@@ -129,38 +126,37 @@ body.cursor-hover .cursor-ring{width:58px;height:58px;border-color:rgba(255,255,
 /* ===== SIDE BOOKMARK NAV ===== */
 .side-nav{position:fixed;right:20px;top:50%;transform:translateY(-50%);z-index:200;display:flex;flex-direction:column;gap:14px}
 .side-nav a{
-  width:8px;height:8px;border-radius:50%;background:rgba(200,180,150,.2);
+  width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.12);
   transition:all var(--spring);display:block;position:relative;text-indent:-9999px;overflow:hidden;
 }
-.side-nav a:hover{background:rgba(200,180,150,.5);transform:scale(1.6)}
-.side-nav a.active{background:var(--gold);box-shadow:0 0 10px var(--gold-glow);transform:scale(1.4)}
-.side-nav a::after{content:attr(data-label);position:absolute;right:18px;top:50%;transform:translateY(-50%);white-space:nowrap;font-size:10px;color:var(--paper);letter-spacing:.06em;text-transform:uppercase;opacity:0;transition:opacity var(--ease);text-indent:0;font-weight:500}
+.side-nav a:hover{background:rgba(255,255,255,.35);transform:scale(1.6)}
+.side-nav a.active{background:var(--gold-light);box-shadow:0 0 10px var(--gold-glow);transform:scale(1.4)}
+.side-nav a::after{content:attr(data-label);position:absolute;right:18px;top:50%;transform:translateY(-50%);white-space:nowrap;font-size:10px;color:rgba(255,255,255,.8);letter-spacing:.06em;text-transform:uppercase;opacity:0;transition:opacity var(--ease);text-indent:0;font-weight:500}
 .side-nav a:hover::after{opacity:.8}
 @media(max-width:768px){.side-nav{right:10px;gap:10px}.side-nav a{width:6px;height:6px}}
 
 /* ===== NAV ===== */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,12,26,.88);backdrop-filter:blur(12px);border-bottom:1px solid rgba(200,180,140,.08);display:flex;justify-content:center;gap:28px;padding:15px 20px}
-nav a{color:var(--ink-subtle);text-decoration:none;font-family:'Inter',-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;transition:all var(--spring);padding:3px 10px;border-radius:4px 12px 3px 10px}
-nav a:hover,nav a.active{color:#fff7df;background:rgba(255,255,255,.12);backdrop-filter:blur(16px) saturate(1.35);transform:rotate(-1deg) translateY(-1px);box-shadow:0 12px 34px rgba(0,0,0,.18),inset 0 0 0 1px rgba(255,255,255,.18)}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,12,20,.82);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:center;gap:24px;padding:12px 20px}
+nav a{color:rgba(255,255,255,.45);text-decoration:none;font-family:'Inter',-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;transition:all var(--spring);padding:4px 10px;border-radius:4px}
+nav a:hover,nav a.active{color:#fff;background:rgba(255,255,255,.08)}
 
 /* ===== CONTENT ===== */
-section{padding:100px 28px;max-width:1000px;margin:0 auto;position:relative;z-index:1}
-@media(max-width:768px){section{padding:64px 20px}}
+section{padding:28px 30px;max-width:none;margin:0;position:relative;z-index:1}
+@media(max-width:768px){section{padding:20px 18px}}
 .s-tag{display:inline-block;font-family:'Inter',-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--gold-light);text-transform:uppercase;margin-bottom:10px}
-.s-title{font-family:'NightSerif','Playfair Display',serif;font-size:clamp(36px,5vw,56px);font-weight:700;letter-spacing:-.01em;margin-bottom:12px;line-height:1.15;color:var(--paper);position:relative}
+.s-title{font-family:'NightSerif','Playfair Display',serif;font-size:clamp(26px,3.5vw,42px);font-weight:700;letter-spacing:-.01em;margin-bottom:10px;line-height:1.15;color:var(--paper);position:relative}
 /* Sketch underline */
 .s-title::after{content:'';display:block;width:56px;height:3px;margin-top:8px;background:var(--gold-dim);opacity:.5;border-radius:2px}
 .s-note{font-size:16px;color:rgba(220,210,190,.55);margin-bottom:44px;max-width:560px}
 
 /* ===== PAINT-SMEAR CARD ===== */
-.page-stack{display:flex;flex-direction:column;gap:20px}
+.page-stack{display:flex;flex-direction:column;gap:10px}
 .page-card{
-  background:rgba(245,239,227,.75);position:relative;cursor:pointer;
+  background:rgba(255,255,255,.03);position:relative;cursor:pointer;
   backdrop-filter:blur(18px) saturate(1.22);-webkit-backdrop-filter:blur(18px) saturate(1.22);
   transition:all var(--spring);overflow:visible;
-  background-image:url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23n)' opacity='.02'/%3E%3C/svg%3E");
-  border:none;
-  box-shadow:var(--shadow-paper),inset 0 0 0 1px rgba(255,255,255,.28),0 0 0 1px rgba(180,160,130,.16);
+  border:1px solid rgba(255,255,255,.06);
+  box-shadow:none;
   border-radius:8px 48px 12px 36px/16px 32px 8px 44px;
   will-change:transform;
 }
@@ -180,128 +176,128 @@ section{padding:100px 28px;max-width:1000px;margin:0 auto;position:relative;z-in
 }
 .page-card:nth-child(odd){border-radius:36px 10px 48px 8px/30px 18px 44px 10px}
 .page-card:nth-child(3n){border-radius:12px 52px 6px 40px/42px 8px 36px 18px}
-.page-card:hover{transform:translateY(-6px) scale(1.015);box-shadow:var(--shadow-lift),0 0 26px rgba(196,138,48,.1),0 0 0 1px rgba(180,160,130,.3)}
-.page-card.open{transform:translateY(-2px);box-shadow:var(--shadow-lift),0 0 0 1px rgba(180,160,130,.3);cursor:default;overflow:hidden}
+.page-card:hover{transform:translateY(-4px) scale(1.01);background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12)}
+.page-card.open{transform:translateY(-2px);background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);cursor:default;overflow:hidden}
 
 /* Page head */
-.page-head{display:flex;align-items:center;justify-content:space-between;padding:28px 32px;gap:18px;position:relative;z-index:1}
+.page-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;gap:14px;position:relative;z-index:1}
 .page-head .ph-left{display:flex;align-items:center;gap:16px;flex:1;min-width:0}
-.page-num{font-family:'NightSerif',serif;font-size:56px;color:var(--gold-dim);opacity:.22;line-height:1;flex-shrink:0;min-width:52px}
-.page-head h3{font-family:'NightSerif','Georgia','Songti SC','SimSun',serif;font-size:22px;font-weight:700;color:var(--ink);letter-spacing:0;line-height:1.2}
-.page-head .ph-preview{font-size:13px;color:var(--ink-muted);margin-top:3px}
-.page-toggle{width:36px;height:34px;border-radius:3px 12px 4px 10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--paper-dark);transition:all var(--spring);font-family:'Inter',sans-serif;font-size:20px;font-weight:500;color:var(--ink-muted);line-height:1}
-.page-card.open .page-toggle{transform:rotate(45deg);background:var(--ink);color:var(--paper)}
+.page-num{font-family:'NightSerif',serif;font-size:40px;color:var(--gold-dim);opacity:.22;line-height:1;flex-shrink:0;min-width:42px}
+.page-head h3{font-family:'NightSerif','Georgia','Songti SC','SimSun',serif;font-size:18px;font-weight:700;color:rgba(245,239,227,.9);letter-spacing:0;line-height:1.2}
+.page-head .ph-preview{font-size:13px;color:rgba(200,190,170,.55);margin-top:3px}
+.page-toggle{width:36px;height:34px;border-radius:3px 12px 4px 10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.08);transition:all var(--spring);font-family:'Inter',sans-serif;font-size:20px;font-weight:500;color:rgba(255,255,255,.6);line-height:1}
+.page-card.open .page-toggle{transform:rotate(45deg);background:rgba(255,255,255,.15);color:var(--paper)}
 
 /* Card body */
 .page-body{max-height:0;overflow:hidden;transition:max-height .7s cubic-bezier(.4,0,.2,1);position:relative;z-index:1}
-.page-card.open .page-body{max-height:700px}
-.page-body-inner{padding:0 32px 28px 100px}
-@media(max-width:768px){.page-body-inner{padding:0 20px 22px 20px}}
-.page-body-inner p,.page-body-inner li{font-size:14px;color:var(--ink-muted);line-height:2}
+.page-card.open .page-body{max-height:400px;overflow-y:auto}
+.page-body-inner{padding:0 22px 20px 88px}
+@media(max-width:768px){.page-body-inner{padding:0 16px 16px 16px}}
+.page-body-inner p,.page-body-inner li{font-size:14px;color:rgba(200,190,170,.65);line-height:2}
 .page-body-inner ul{list-style:none;padding:0;margin-top:10px}
 .page-body-inner li{padding:4px 0 4px 18px;position:relative}
-.page-body-inner li::before{content:'—';position:absolute;left:0;color:var(--ink-subtle);font-size:10px}
+.page-body-inner li::before{content:'—';position:absolute;left:0;color:rgba(200,180,140,.4);font-size:10px}
 
 /* Drop cap */
-.dropcap::first-letter{font-family:'NightSerif',serif;font-size:3.2em;float:left;line-height:.75;padding-right:8px;padding-top:4px;color:var(--gold-dim)}
+.dropcap::first-letter{font-family:'NightSerif',serif;font-size:3.2em;float:left;line-height:.75;padding-right:8px;padding-top:4px;color:var(--gold-light)}
 
 /* Highlight box (blockquote style) */
-.highlight-box{background:rgba(196,138,48,.05);border-left:2px solid var(--gold-dim);padding:14px 18px;margin:14px 0;border-radius:0 4px 4px 0;font-style:italic;position:relative}
-.highlight-box::before{content:'\201C';font-family:'NightSerif',serif;font-size:40px;color:var(--gold-dim);opacity:.2;position:absolute;top:-8px;left:8px;line-height:1}
-.highlight-box strong{font-style:normal}
+.highlight-box{background:rgba(196,138,48,.06);border-left:2px solid var(--gold-dim);padding:14px 18px;margin:14px 0;border-radius:0 4px 4px 0;font-style:italic;position:relative;color:rgba(220,210,190,.7)}
+.highlight-box::before{content:'\201C';font-family:'NightSerif',serif;font-size:40px;color:var(--gold-dim);opacity:.15;position:absolute;top:-8px;left:8px;line-height:1}
+.highlight-box strong{font-style:normal;color:rgba(245,239,227,.85)}
 
 /* Sketch line separator */
 .sketch-line{width:60px;height:8px;margin:16px 0;background:url("data:image/svg+xml,%3Csvg width='60' height='8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 4 Q15 2 30 5 Q45 7 60 3' fill='none' stroke='%23a07028' stroke-width='.8' opacity='.3'/%3E%3C/svg%3E") no-repeat center}
 
 /* ===== SKILL BARS ===== */
 .skill-row{display:flex;align-items:center;gap:12px;margin:5px 0}
-.skill-row .s-name{width:140px;font-size:13px;font-weight:600;color:var(--ink);flex-shrink:0}
-.skill-row .s-bar-wrap{flex:1;height:4px;background:var(--paper-dark);border-radius:2px;overflow:hidden}
+.skill-row .s-name{width:140px;font-size:13px;font-weight:600;color:rgba(245,239,227,.75);flex-shrink:0}
+.skill-row .s-bar-wrap{flex:1;height:4px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden}
 .skill-row .s-bar{height:100%;background:linear-gradient(90deg,var(--gold-dim),var(--gold-light));border-radius:2px;transition:width 1.4s cubic-bezier(.4,0,.2,1);width:0}
-.skill-row .s-pct{width:36px;font-size:11px;color:var(--gold-dim);font-weight:600;text-align:right;flex-shrink:0}
+.skill-row .s-pct{width:36px;font-size:11px;color:var(--gold-light);font-weight:600;text-align:right;flex-shrink:0}
 
 /* ===== WORK PLAYER ===== */
-.portfolio-player{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(250px,.65fr);gap:18px;align-items:start}
-.player-frame{position:relative;min-height:460px;background:linear-gradient(180deg,#101733,#0b1024);border-radius:6px 22px 8px 18px;box-shadow:var(--shadow-lift);overflow:hidden;color:var(--paper);isolation:isolate;}
-.player-video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:rgba(4,6,18,.72);z-index:2;opacity:0;transition:opacity .45s ease}
+.portfolio-player{display:flex;flex-direction:column;gap:16px}
+@media(min-width:900px){.portfolio-player{flex-direction:row;align-items:flex-start}
+.player-main{flex:1.4;min-width:0}
+.work-data-panel{flex:1;min-width:280px;max-width:420px}}
+.work-data-panel{display:flex;flex-direction:column;gap:10px;transition:opacity .25s ease}
+.work-data-panel.switching{opacity:.4}
+.portfolio-section .portfolio-player{flex-direction:column!important}
+.portfolio-section .player-main{width:100%;max-width:900px;margin:0 auto}
+.portfolio-section .work-data-panel{max-width:900px;margin:0 auto;width:100%}
+.portfolio-section .platform-grid{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.player-main{display:flex;flex-direction:column;gap:0;min-width:0}
+.player-frame{position:relative;width:100%;background:transparent;border-radius:12px;overflow:hidden;color:var(--paper);isolation:isolate;transition:width .4s ease,max-width .4s ease}
+.player-frame.ratio-4-3{aspect-ratio:4/3;max-width:100%}
+.player-frame.ratio-3-4{aspect-ratio:3/4;max-width:360px;margin:0 auto}
+.player-frame.ratio-1-1{aspect-ratio:1/1;max-width:500px;margin:0 auto}
+@media(min-width:900px){.player-frame.ratio-3-4{max-width:300px}}
+.player-video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:transparent;z-index:1;opacity:0;transition:opacity .5s ease;pointer-events:none}
 .player-frame.has-video .player-video{opacity:1}
-.player-frame.has-video .player-sky,.player-frame.has-video .player-scene,.player-frame.has-video .player-city,.player-frame.has-video .player-tower,.player-frame.has-video .player-lines{opacity:0}
-.player-frame::before{content:'';position:absolute;inset:18px;border:2px solid rgba(248,232,189,.42);clip-path:polygon(0% 5px,6px 0%,98% 1%,100% 7px,99% 96%,96% 100%,3% 99%,0% 95%);opacity:.72}
-.player-sky{position:absolute;inset:0;background:radial-gradient(circle at 18% 18%,rgba(255,238,178,.18),transparent 15%),linear-gradient(180deg,#08112a 0%,#123f62 58%,#0d1329 100%)}
-.player-sky::before{content:'';position:absolute;inset:0;background-image:radial-gradient(2px 2px at 12% 18%,rgba(255,248,220,.9),transparent),radial-gradient(1px 1px at 72% 20%,rgba(255,248,220,.7),transparent),radial-gradient(2px 2px at 48% 10%,rgba(255,248,220,.8),transparent),radial-gradient(1px 1px at 86% 34%,rgba(255,248,220,.6),transparent)}
-.player-city{position:absolute;left:0;right:0;bottom:0;height:42%;background:linear-gradient(90deg,#0a0d17 0 12%,transparent 12% 15%,#0a0d17 15% 28%,transparent 28% 31%,#0a0d17 31% 42%,transparent 42% 46%,#0a0d17 46% 62%,transparent 62% 66%,#0a0d17 66% 81%,transparent 81% 84%,#0a0d17 84% 100%)}
-.player-city::before{content:'';position:absolute;left:6%;right:8%;bottom:18%;height:48%;background:repeating-linear-gradient(90deg,rgba(255,225,138,.85) 0 4px,transparent 4px 24px);opacity:.55;filter:blur(.2px)}
-.player-tower{position:absolute;left:48%;bottom:30%;width:44px;height:46%;border:3px solid rgba(248,232,189,.72);border-bottom:0;transform:skewX(-3deg);box-shadow:inset 0 0 0 2px rgba(20,10,5,.18)}
-.player-tower::before{content:'';position:absolute;left:8px;right:8px;top:-30px;height:30px;border:3px solid rgba(248,232,189,.72);border-bottom:0;clip-path:polygon(50% 0,100% 100%,0 100%)}
-.player-tower::after{content:'';position:absolute;left:8px;top:18px;width:22px;height:22px;border:2px solid rgba(248,232,189,.8);border-radius:50%;background:rgba(255,250,230,.16)}
-.player-lines{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 8px,rgba(255,255,255,.018) 8px 9px),repeating-linear-gradient(90deg,transparent 0 18px,rgba(255,255,255,.018) 18px 19px);mix-blend-mode:screen}
-.player-scene{position:absolute;inset:0;opacity:.2;transform:translateX(-4%);background:linear-gradient(110deg,transparent 0 28%,rgba(255,220,130,.16) 29% 30%,transparent 31% 100%)}
-.player-frame.playing .player-scene{animation:filmSweep 2.8s linear infinite;opacity:.5}
-.player-frame.playing .player-city::before{animation:windowPulse 1.8s ease-in-out infinite}
-.play-button{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-2deg);z-index:3;width:118px;height:88px;border:0;background:var(--paper);color:var(--ink);border-radius:8px 24px 6px 20px/20px 28px 10px 18px;box-shadow:var(--shadow-lift);font-family:'Inter',sans-serif;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;transition:all var(--spring);}
-.play-button::before{content:'▶';display:block;font-family:'NightSerif',serif;font-size:28px;line-height:1;margin-bottom:2px;color:var(--gold-dim)}
-.play-button:hover{transform:translate(-50%,-50%) rotate(1deg) scale(1.05)}
-.player-frame.playing .play-button{opacity:.18;transform:translate(-50%,-50%) scale(.92);pointer-events:none}
-.player-caption{position:absolute;left:34px;right:34px;bottom:30px;z-index:3}
-.player-frame.has-video .player-caption{background:linear-gradient(180deg,transparent,rgba(5,8,18,.76));left:0;right:0;bottom:0;padding:84px 34px 30px}
-.player-label{display:inline-block;background:rgba(245,239,227,.9);color:var(--ink);font-family:'Inter',sans-serif;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;padding:6px 14px;margin-bottom:10px;border-radius:3px 10px 4px 8px}
-.player-title{font-family:'NightSerif','Georgia','Songti SC','SimSun',serif;font-size:clamp(30px,5vw,52px);line-height:1.05;color:var(--paper);text-shadow:0 3px 16px rgba(0,0,0,.45)}
-.player-desc{font-size:13px;color:rgba(245,239,227,.72);max-width:520px;margin-top:10px}
-.work-panel{display:flex;flex-direction:column;gap:12px}
-.platform-card,.work-note{background:rgba(245,239,227,.68);backdrop-filter:blur(18px) saturate(1.25);-webkit-backdrop-filter:blur(18px) saturate(1.25);box-shadow:var(--shadow-paper),inset 0 0 0 1px rgba(255,255,255,.28);padding:18px;position:relative;border-radius:6px 20px 8px 16px/12px 18px 6px 16px;}
-.platform-card h3,.work-note h3{font-family:'NightSerif','Georgia','Songti SC','SimSun',serif;font-size:22px;color:var(--ink);line-height:1.1;margin-bottom:10px}
-.platform-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.play-button{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-2deg);z-index:10;width:72px;height:72px;border:0;background:var(--paper);color:var(--gold-dim);border-radius:50%;box-shadow:var(--shadow-lift);font-family:'NightSerif',serif;font-size:30px;line-height:72px;text-align:center;cursor:pointer;transition:all var(--spring);padding:0}
+.play-button:hover{transform:translate(-50%,-50%) rotate(1deg) scale(1.12)}
+.player-frame.playing .play-button{opacity:0;transform:translate(-50%,-50%) scale(.7);pointer-events:none;transition:all .5s ease .3s}
+.player-frame.playing:hover .play-button{opacity:.85;transform:translate(-50%,-50%) scale(1);pointer-events:auto;transition:all .2s ease 0s}
+.player-caption{padding:14px 0 0;z-index:3}
+.player-frame.has-video .player-caption{background:none;padding:14px 0 0}
+.player-label{display:inline-block;background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);font-family:'Inter',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:5px 12px;margin-bottom:8px;border-radius:3px 10px 4px 8px;border:1px solid rgba(255,255,255,.1)}
+.player-title{font-family:'NightSerif','Georgia','Songti SC','SimSun',serif;font-size:clamp(24px,3vw,36px);line-height:1.1;color:var(--paper)}
+.player-desc{font-size:12px;color:rgba(245,239,227,.55);max-width:100%;margin-top:6px;line-height:1.6}
+.work-panel{display:flex;flex-direction:column;gap:14px}
+.platform-card,.work-note{background:rgba(255,255,255,.03);backdrop-filter:blur(18px) saturate(1.25);-webkit-backdrop-filter:blur(18px) saturate(1.25);border:1px solid rgba(255,255,255,.06);padding:20px;position:relative;border-radius:8px 24px 10px 18px/14px 20px 8px 18px;transition:all .4s ease}
+.platform-card h3,.work-note h3{font-family:'NightSerif','Georgia','Songti SC','SimSun',serif;font-size:20px;color:rgba(245,239,227,.85);line-height:1.1;margin-bottom:12px;letter-spacing:.02em}
+.platform-grid{display:grid;grid-template-columns:1fr;gap:8px}
 .platform-grid.work-data{grid-template-columns:1fr}
-.platform-item{background:rgba(255,255,255,.18);backdrop-filter:blur(12px);padding:14px 16px;border-radius:4px 14px 5px 10px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.2);transition:all var(--spring);cursor:default;}
-.platform-item:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.35),var(--shadow-lift)}
-.platform-item .pf-name{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:10px;font-family:'NightSerif','Georgia',serif;letter-spacing:.02em}
-/* ===== WORK SELECTOR CARDS ===== */
-.work-selector{display:flex;flex-direction:column;gap:8px}
+.platform-item{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.03);backdrop-filter:blur(10px);padding:10px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.06);transition:all var(--spring);cursor:default;position:relative;overflow:hidden}
+.platform-item:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);transform:translateX(3px)}
+.platform-item .pf-name{font-size:12px;font-weight:700;color:rgba(245,239,227,.8);min-width:52px;font-family:'Inter',sans-serif;letter-spacing:.04em}
+.platform-item .metrics-grid{flex:1;display:flex;gap:14px;flex-wrap:wrap}
+/* ===== WORK TABS (horizontal pills) ===== */
+.work-tabs{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;justify-content:flex-start;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .work-card-sel{
-  display:flex;align-items:center;gap:12px;width:100%;border:0;text-align:left;
-  background:rgba(245,239,227,.62);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  color:var(--ink);padding:14px 16px;cursor:pointer;
-  border-radius:5px 18px 6px 14px;
-  box-shadow:var(--shadow-paper),inset 0 0 0 1px rgba(255,255,255,.22);
-  transition:all var(--spring);font-family:inherit;position:relative;overflow:hidden;
-}
-.work-card-sel::after{
-  content:'';position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(255,210,120,.12),transparent 70%);
-  opacity:0;transition:opacity .35s ease;
+  display:inline-flex;align-items:center;gap:4px;border:1px solid rgba(255,255,255,.08);white-space:nowrap;flex-shrink:0;
+  background:rgba(255,255,255,.04);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  color:rgba(255,255,255,.55);padding:6px 12px;cursor:pointer;
+  border-radius:20px;font-family:inherit;font-size:11px;font-weight:600;
+  transition:all var(--spring);position:relative;overflow:hidden;letter-spacing:.02em;
 }
 .work-card-sel:hover,.work-card-sel.active{
-  transform:translateY(-3px) translateX(4px);
-  box-shadow:var(--shadow-lift),inset 0 0 0 1px rgba(255,255,255,.35);
-  background:rgba(255,250,232,.78);
+  transform:translateY(-2px);
+  background:rgba(255,255,255,.1);color:rgba(255,255,255,.85);border-color:rgba(255,255,255,.15);
 }
-.work-card-sel:hover::after{opacity:1}
-.work-card-sel.active{outline:2px solid rgba(196,138,48,.3);outline-offset:-2px}
-.work-card-sel .wcs-icon{font-size:24px;flex-shrink:0;width:36px;text-align:center;line-height:1}
-.work-card-sel .wcs-info{flex:1;min-width:0}
-.work-card-sel .wcs-info strong{display:block;font-family:'NightSerif','Georgia','Songti SC','SimSun',serif;font-size:18px;color:var(--ink);line-height:1.2}
-.work-card-sel .wcs-info span{display:block;font-size:11px;color:var(--ink-muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.work-card-sel .wcs-arrow{font-size:14px;color:var(--gold-dim);opacity:0;transition:all var(--spring);flex-shrink:0}
-.work-card-sel:hover .wcs-arrow,.work-card-sel.active .wcs-arrow{opacity:1;transform:translateX(4px)}
+.work-card-sel.active{outline:2px solid rgba(196,138,48,.35);outline-offset:-2px;color:var(--gold-light)}
+@media(max-width:768px){.work-tabs{gap:4px}.work-card-sel{padding:6px 12px;font-size:11px}}
 
 /* Metric rows */
-.metrics-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.metric{text-align:left}
-.metric .m-num{font-family:'NightSerif','Georgia',serif;font-size:26px;font-weight:700;line-height:1.1;transition:all .6s ease}
-.metric .m-label{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted);margin-top:2px}
+.metrics-grid{display:flex;gap:14px;flex-wrap:wrap}
+.metric{display:flex;align-items:baseline;gap:3px;position:relative}
+.metric .m-num{font-family:'Inter',sans-serif;font-size:14px;font-weight:700;line-height:1;transition:all .5s cubic-bezier(.34,1.56,.64,1)}
+.metric .m-label{font-size:10px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.04em}
 /* Color-coded numbers */
 .m-num.plays{color:#4a8bb0}
 .m-num.likes{color:#d86a48}
 .m-num.saves{color:#c48a30}
 .m-num.comments{color:#5a7a4a}
 .m-num.shares{color:#8b5a9e}
+.m-num.coins{color:#c48a30}
 .m-num.subs{color:#c48a30}
-
-/* Hover pulse */
-.platform-item:hover .m-num{transform:scale(1.08)}
-.platform-item:hover .m-num.plays{text-shadow:0 0 18px rgba(74,139,176,.3)}
-.platform-item:hover .m-num.likes{text-shadow:0 0 18px rgba(216,106,72,.3)}
-.platform-item:hover .m-num.saves{text-shadow:0 0 18px rgba(196,162,48,.3)}
+/* Hover pulse with glow */
+.platform-item:hover .m-num{transform:scale(1.12)}
+.platform-item:hover .m-num.plays{text-shadow:0 0 22px rgba(74,139,176,.5)}
+.platform-item:hover .m-num.likes{text-shadow:0 0 22px rgba(216,106,72,.5)}
+.platform-item:hover .m-num.saves{text-shadow:0 0 22px rgba(196,162,48,.5)}
+.platform-item:hover .m-num.comments{text-shadow:0 0 22px rgba(90,122,74,.5)}
+.platform-item:hover .m-num.shares{text-shadow:0 0 22px rgba(139,90,158,.5)}
+.platform-item:hover .m-num.coins{text-shadow:0 0 22px rgba(196,162,48,.5)}
+/* Data panel enter animation */
+@keyframes dataSlideIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.platform-grid.work-data .platform-item{animation:dataSlideIn .45s ease both}
+.platform-grid.work-data .platform-item:nth-child(1){animation-delay:.05s}
+.platform-grid.work-data .platform-item:nth-child(2){animation-delay:.1s}
+.platform-grid.work-data .platform-item:nth-child(3){animation-delay:.15s}
+.platform-grid.work-data .platform-item:nth-child(4){animation-delay:.2s}
+.platform-grid.work-data .platform-item:nth-child(5){animation-delay:.25s}
 .work-list{display:grid;gap:10px}
 .work-tab{border:0;text-align:left;background:rgba(245,239,227,.66);backdrop-filter:blur(16px) saturate(1.25);-webkit-backdrop-filter:blur(16px) saturate(1.25);color:var(--ink);padding:14px 16px;border-radius:5px 18px 6px 12px;box-shadow:var(--shadow-paper),inset 0 0 0 1px rgba(255,255,255,.26);cursor:pointer;transition:all var(--spring);font-family:inherit;}
 .work-tab:hover,.work-tab.active{transform:translateY(-3px) rotate(-.6deg);box-shadow:var(--shadow-lift),inset 0 0 0 1px rgba(255,255,255,.38);background:rgba(255,250,232,.78);/* ink bleed removed */}
@@ -309,49 +305,79 @@ section{padding:100px 28px;max-width:1000px;margin:0 auto;position:relative;z-in
 .work-tab .sketch-icon{display:inline-flex;align-items:center;justify-content:center;width:34px;height:28px;margin-right:8px;background:var(--ink);color:var(--paper);border-radius:4px 12px 3px 10px;font-family:'Inter',sans-serif;font-size:10px;font-weight:800;text-transform:uppercase;vertical-align:middle}
 .work-tab strong{font-family:'NightSerif','Georgia','Songti SC','SimSun',serif;font-size:20px;vertical-align:middle}
 .work-tab span{display:block;margin-left:46px;margin-top:4px;font-size:11px;color:var(--ink-muted)}
-.platform-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.platform-links a{font-family:'Inter',sans-serif;font-size:12px;font-weight:800;color:var(--ink);text-decoration:none;background:rgba(255,255,255,.18);backdrop-filter:blur(12px);padding:8px 12px;border-radius:4px 12px 4px 10px;transition:all var(--spring);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
-.platform-links a:hover{transform:translateY(-2px) rotate(-1deg);background:var(--gold-light)}
-@keyframes filmSweep{from{transform:translateX(-60%)}to{transform:translateX(75%)}}
-@keyframes windowPulse{0%,100%{opacity:.38}50%{opacity:.8}}
+.platform-links{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.platform-links a{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;color:var(--ink);text-decoration:none;background:rgba(255,255,255,.15);backdrop-filter:blur(10px);padding:7px 10px;border-radius:4px 10px 4px 8px;transition:all var(--spring);box-shadow:inset 0 0 0 1px rgba(255,255,255,.15)}
+.platform-links a:hover{transform:translateY(-2px) rotate(-1deg);background:var(--gold-light);box-shadow:0 4px 14px rgba(196,138,48,.2)}
 
 /* ===== BRANDS ===== */
 .brands-grid{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:10px}
-.stamp{padding:10px 22px;background:rgba(245,239,227,.68);backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2);border-radius:3px 14px 4px 12px;box-shadow:var(--shadow-paper),inset 0 0 0 1px rgba(255,255,255,.24);font-family:'NightSerif','Playfair Display',serif;font-size:13px;font-weight:600;color:var(--ink);transition:all var(--spring);cursor:default;text-align:center;will-change:transform;background-image:url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23n)' opacity='.02'/%3E%3C/svg%3E")}
-.stamp:hover{transform:translateY(-3px) rotate(-.5deg);box-shadow:var(--shadow-lift)}
-.stamp.dark{background:rgba(38,30,24,.58);color:var(--paper);box-shadow:0 2px 8px rgba(20,10,5,.35),inset 0 0 0 1px rgba(255,255,255,.14)}
-.stamp.dark:hover{background:rgba(58,45,34,.72)}
-.brand-stage{position:relative;margin-top:18px;padding:34px 18px;overflow:hidden;border-radius:6px 24px 8px 20px;background:rgba(245,239,227,.46);backdrop-filter:blur(18px) saturate(1.25);-webkit-backdrop-filter:blur(18px) saturate(1.25);box-shadow:var(--shadow-paper),inset 0 0 0 1px rgba(255,255,255,.24);}
+.stamp{padding:8px 18px;background:rgba(255,255,255,.04);backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2);border-radius:3px 14px 4px 12px;border:1px solid rgba(255,255,255,.08);font-family:'Inter',sans-serif;font-size:12px;font-weight:500;color:rgba(245,239,227,.7);transition:all var(--spring);cursor:default;text-align:center;will-change:transform}
+.stamp:hover{transform:translateY(-3px) rotate(-.5deg);background:rgba(255,255,255,.08);color:rgba(245,239,227,.9)}
+.stamp.dark{background:rgba(255,255,255,.06);color:var(--paper);border-color:rgba(255,255,255,.12)}
+.stamp.dark:hover{background:rgba(255,255,255,.12)}
+.brand-stage{position:relative;margin-top:14px;padding:24px 16px;overflow:hidden;border-radius:6px 24px 8px 20px;background:rgba(255,255,255,.03);backdrop-filter:blur(18px) saturate(1.25);-webkit-backdrop-filter:blur(18px) saturate(1.25);border:1px solid rgba(255,255,255,.06);}
+.brand-caption{color:rgba(200,190,170,.45)}
 .brand-stage::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 18% 22%,rgba(216,106,72,.18),transparent 20%),radial-gradient(circle at 78% 14%,rgba(16,62,98,.16),transparent 22%),repeating-linear-gradient(90deg,rgba(58,48,32,.08) 0 2px,transparent 2px 24px);opacity:.7;mix-blend-mode:multiply}
 .brand-stage::after{content:'';position:absolute;inset:12px;border:1px solid rgba(58,48,32,.14);pointer-events:none}
 .brand-stage .brands-grid{position:relative;z-index:1}
 .brand-caption{position:relative;z-index:1;text-align:center;font-size:12px;color:var(--ink-muted);margin-top:16px}
 
 /* ===== HERO ===== */
-.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:140px 28px 100px;max-width:1060px;margin:0 auto;position:relative;z-index:1}
-.hero>*{position:relative;z-index:2;max-width:620px}
-.hero::before{content:'';position:absolute;right:-20px;top:10%;width:min(44vw,420px);height:74%;background:radial-gradient(circle at 28% 18%,rgba(255,245,210,.92) 0 34px,transparent 36px),radial-gradient(circle at 18% 15%,rgba(255,245,210,.65) 0 2px,transparent 3px),radial-gradient(circle at 62% 10%,rgba(255,245,210,.55) 0 2px,transparent 3px),radial-gradient(circle at 80% 22%,rgba(255,245,210,.6) 0 1px,transparent 2px),linear-gradient(90deg,transparent 0 8%,#0b1020 8% 24%,transparent 24% 29%,#0b1020 29% 48%,transparent 48% 54%,#0b1020 54% 76%,transparent 76% 80%,#0b1020 80% 100%),linear-gradient(180deg,#0b1430,#123f62 58%,#0a0d18);clip-path:polygon(2% 1%,98% 0,100% 96%,96% 100%,3% 98%,0 4%);box-shadow:0 28px 70px rgba(0,0,0,.42),0 0 0 1px rgba(255,230,170,.14);opacity:.72}
-.hero::after{content:'CONTENT / CINEMA / VISUAL STORY';position:absolute;right:6px;bottom:16%;z-index:3;writing-mode:vertical-rl;color:rgba(245,239,227,.46);font-size:11px;letter-spacing:.28em}
-.hero .ticket{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;background:rgba(245,239,227,.68);backdrop-filter:blur(16px) saturate(1.25);-webkit-backdrop-filter:blur(16px) saturate(1.25);border-radius:4px 14px 3px 11px;font-size:11px;font-weight:600;letter-spacing:.14em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:32px;box-shadow:0 12px 28px rgba(0,0,0,.22),inset 0 0 0 1px rgba(255,255,255,.22)}
-.hero .ticket::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold);opacity:.7}
-.hero .aka{font-size:16px;color:rgba(220,210,190,.35);margin-bottom:24px;font-style:italic;letter-spacing:.03em}
-.hero .aka span{margin:0 12px}
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center;padding:36px 32px;max-width:none;margin:0;position:relative;z-index:1}
+@media(max-width:768px){.hero{grid-template-columns:1fr;gap:24px;padding:24px 20px;text-align:center}}
+.hero>*{position:relative;z-index:2}
+.hero::before,.hero::after{display:none}
+.hero h1{font-size:clamp(38px,5vw,68px)!important;font-family:'Playfair Display','Georgia','Songti SC',serif;font-weight:700;color:var(--paper);line-height:1.05;margin-bottom:14px;letter-spacing:-.01em}
+.hero h1 em{font-style:italic;font-weight:400;color:var(--gold-light)}
+.hero-about{display:flex;flex-direction:column;gap:14px}
+.hero-role{font-size:10px;text-transform:uppercase;letter-spacing:.18em;color:var(--gold-light);font-weight:600}
+.hero-bio{font-size:14px;color:rgba(220,210,190,.65);line-height:1.8;max-width:480px}
+.hero-bio strong{color:rgba(245,239,227,.85)}
+.hero-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.hero-chip{display:inline-block;padding:4px 12px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);font-size:11px;color:rgba(255,255,255,.55);letter-spacing:.04em;transition:all .3s}
+.hero-chip:hover{background:rgba(255,255,255,.12);color:rgba(255,255,255,.8)}
+.hero-metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-content:center}
+@media(max-width:768px){.hero-metrics{grid-template-columns:repeat(4,1fr);gap:8px}.hero-about{align-items:center}.hero-bio{max-width:100%}}
+.hero .ticket{display:none}
+.hero .aka{display:none}
 .hero h1{font-family:'NightSerif','Playfair Display',serif;font-size:clamp(58px,9vw,112px);font-weight:800;letter-spacing:0;line-height:1.02;margin-bottom:22px;color:var(--paper);text-shadow:0 2px 16px rgba(0,0,0,.5),0 0 40px rgba(232,200,96,.1)}
 .hero h1 em{font-style:italic;color:var(--gold-light);font-weight:400}
 .hero .tagline{font-size:17px;color:rgba(230,220,200,.6);max-width:520px;margin-bottom:48px;line-height:1.75}
-.hero-stats{display:flex;gap:24px;flex-wrap:wrap}
-.hero-stat{background:rgba(245,239,227,.62);backdrop-filter:blur(16px) saturate(1.25);-webkit-backdrop-filter:blur(16px) saturate(1.25);padding:18px 26px;border-radius:5px 16px 4px 12px;box-shadow:var(--shadow-paper),0 0 34px rgba(232,200,96,.08),inset 0 0 0 1px rgba(255,255,255,.22);transition:all var(--spring);cursor:default;min-width:100px;will-change:transform}
+.hero-stats{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.hero-stat{background:rgba(255,255,255,.04);backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2);padding:14px 20px;border-radius:5px 16px 4px 12px;border:1px solid rgba(255,255,255,.06);transition:all var(--spring);cursor:default;min-width:90px;will-change:transform}
 .hero-stat:hover{transform:translateY(-4px) rotate(-.5deg);box-shadow:var(--shadow-lift)}
 .hero-stat:nth-child(even):hover{transform:translateY(-4px) rotate(.5deg)}
-.hero-stat .num{font-family:'NightSerif',serif;font-size:32px;font-weight:700;color:var(--gold-dim)}
-.hero-stat .lbl{font-size:11px;color:var(--ink-muted);letter-spacing:.08em;text-transform:uppercase;margin-top:4px}
+.hero-stat .num{font-family:'NightSerif',serif;font-size:28px;font-weight:700;color:var(--gold-light)}
+.hero-stat .lbl{font-size:10px;color:rgba(200,190,170,.5);letter-spacing:.08em;text-transform:uppercase;margin-top:4px}
+
+/* ===== SOCIAL GRID ===== */
+.social-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+@media(max-width:900px){.social-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:520px){.social-grid{grid-template-columns:repeat(2,1fr)}}
+.social-card{display:flex;flex-direction:column;align-items:center;gap:6px;padding:18px 12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;text-decoration:none;transition:all var(--spring);text-align:center}
+.social-card:hover{background:rgba(255,255,255,.08);transform:translateY(-4px);border-color:rgba(196,138,48,.3);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.social-icon{font-size:32px;line-height:1}
+.social-name{font-size:13px;font-weight:700;color:rgba(245,239,227,.85);letter-spacing:.03em}
+.social-handle{font-size:10px;color:rgba(255,255,255,.45);letter-spacing:.02em}
+.social-stat{font-size:10px;color:var(--gold-light);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+
+/* ===== STRENGTH GRID ===== */
+.strength-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.strength-grid{grid-template-columns:1fr}}
+.strength-item{display:flex;gap:12px;padding:14px 16px;background:rgba(255,255,255,.04);border-radius:12px;border:1px solid rgba(255,255,255,.06);transition:all var(--spring)}
+.strength-item:hover{background:rgba(255,255,255,.08);transform:translateY(-1px)}
+.strength-icon{font-size:28px;flex-shrink:0;width:40px;text-align:center;line-height:1.2}
+.strength-info strong{display:block;font-size:13px;color:var(--paper);margin-bottom:4px;font-family:'Inter',sans-serif;font-weight:600;letter-spacing:.02em}
+.strength-info p{font-size:11px;color:rgba(200,195,180,.55);line-height:1.6;margin:0}
 
 /* ===== CONTACT ===== */
 .contact-row{display:flex;gap:12px;flex-wrap:wrap}
-.cc-item{flex:1;min-width:140px;background:rgba(245,239,227,.68);backdrop-filter:blur(16px) saturate(1.25);-webkit-backdrop-filter:blur(16px) saturate(1.25);padding:18px 20px;border-radius:6px 20px 5px 14px;box-shadow:var(--shadow-paper),inset 0 0 0 1px rgba(255,255,255,.22);transition:all var(--spring);cursor:default;}
-.cc-item:hover{transform:translateY(-3px);box-shadow:var(--shadow-lift)}
-.cc-item .cc-label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--gold-dim);margin-bottom:4px}
-.cc-item .cc-val{font-size:13px;color:var(--ink);font-weight:500}
+.cc-item{flex:1;min-width:140px;background:rgba(255,255,255,.03);backdrop-filter:blur(16px) saturate(1.25);-webkit-backdrop-filter:blur(16px) saturate(1.25);padding:18px 20px;border-radius:6px 20px 5px 14px;border:1px solid rgba(255,255,255,.06);transition:all var(--spring);cursor:default;}
+.cc-item:hover{transform:translateY(-3px);background:rgba(255,255,255,.06)}
+.cc-item .cc-label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--gold-light);margin-bottom:4px}
+.cc-item .cc-val{font-size:13px;color:rgba(245,239,227,.75);font-weight:500}
+.cc-item .cc-val a{transition:all var(--ease);color:rgba(245,239,227,.75)}
+.cc-item .cc-val a:hover{color:var(--gold-light)}
 
 /* ===== MUSIC BTN ===== */
 .music-btn{position:fixed;bottom:24px;right:24px;z-index:200;width:38px;height:38px;border-radius:50%;background:rgba(245,239,227,.58);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.22);cursor:pointer;box-shadow:var(--shadow-paper);transition:all var(--spring);display:flex;align-items:center;justify-content:center;font-size:15px;opacity:.65}
@@ -359,14 +385,14 @@ section{padding:100px 28px;max-width:1000px;margin:0 auto;position:relative;z-in
 .music-btn.off{opacity:.3}.music-btn.off::after{content:'';position:absolute;width:1.5px;height:16px;background:var(--ink-muted);transform:rotate(-45deg);border-radius:1px}
 
 /* ===== RESUME BAR ===== */
-.resume-ticket{background:rgba(245,239,227,.68);backdrop-filter:blur(16px) saturate(1.25);-webkit-backdrop-filter:blur(16px) saturate(1.25);border-radius:6px 20px 5px 14px;box-shadow:var(--shadow-paper),inset 0 0 0 1px rgba(255,255,255,.22);padding:22px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:40px;}
-.resume-ticket p{font-size:13px;color:var(--ink-muted)}
-.resume-ticket strong{color:var(--ink);font-family:'NightSerif','Playfair Display',serif}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;border-radius:4px 14px 4px 12px;background:rgba(58,48,32,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:var(--paper);font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;letter-spacing:.04em;border:1px solid rgba(255,255,255,.18);transition:all var(--spring);font-family:inherit;}
-.btn:hover{transform:translateY(-2px) rotate(-.3deg);box-shadow:0 4px 16px rgba(20,10,5,.35)}
+.resume-ticket{background:rgba(255,255,255,.03);backdrop-filter:blur(16px) saturate(1.25);-webkit-backdrop-filter:blur(16px) saturate(1.25);border-radius:6px 20px 5px 14px;border:1px solid rgba(255,255,255,.06);padding:22px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:28px;}
+.resume-ticket p{font-size:13px;color:rgba(200,190,170,.55)}
+.resume-ticket strong{color:rgba(245,239,227,.8);font-family:'NightSerif','Playfair Display',serif}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;border-radius:4px 14px 4px 12px;background:rgba(255,255,255,.08);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:var(--paper);font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;letter-spacing:.04em;border:1px solid rgba(255,255,255,.15);transition:all var(--spring);font-family:inherit;}
+.btn:hover{transform:translateY(-2px) rotate(-.3deg);background:rgba(255,255,255,.15)}
 
 /* ===== FOOTER ===== */
-footer{text-align:center;padding:36px 24px;position:relative;z-index:1;color:rgba(200,180,150,.25);font-size:10px;letter-spacing:.06em}
+footer{text-align:center;padding:32px 24px 50px;position:relative;z-index:1;color:rgba(200,180,150,.4);font-size:10px;letter-spacing:.06em}
 footer .ft-icon{margin-bottom:8px;opacity:.18}
 
 /* ===== AESTHETIC FLOATS ===== */
@@ -421,13 +447,14 @@ footer .ft-icon{margin-bottom:8px;opacity:.18}
   .hero h1{font-size:38px}
   .hero-stats{gap:12px}
   .hero-stat{flex:1 1 calc(50% - 12px);min-width:120px}
-  .portfolio-player{grid-template-columns:1fr}
-  .player-frame{min-height:390px}
-  .page-head{padding:18px 16px}
-  .page-body-inner{padding:0 16px 18px 16px}
-  .page-num{font-size:30px;min-width:34px}
-  .page-head h3{font-size:16px}
-  .skill-row .s-name{width:90px;font-size:12px}
+  .portfolio-player{flex-direction:column!important}
+  .player-frame{min-height:280px}
+  .work-data-panel{max-width:none}
+  .page-head{padding:16px 14px}
+  .page-body-inner{padding:0 14px 16px 14px}
+  .page-num{font-size:28px;min-width:30px}
+  .page-head h3{font-size:15px}
+  .skill-row .s-name{width:80px;font-size:11px}
   .side-nav{right:8px;gap:8px}
 }
 @media(max-width:520px){
@@ -438,9 +465,28 @@ footer .ft-icon{margin-bottom:8px;opacity:.18}
   .platform-grid{grid-template-columns:1fr}
   .contact-row{display:grid;grid-template-columns:1fr}
 }
+
+/* ===== MAGIC BENTO CARDS ===== */
+.card-grid{display:grid;gap:14px;padding:80px 24px 20px;max-width:1300px;margin:0 auto;position:relative;z-index:1}
+.magic-bento-card{display:flex;flex-direction:column;position:relative;border-radius:18px;border:1px solid rgba(255,255,255,.08);background:rgba(18,15,23,.65);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);overflow:hidden;transition:all .35s ease;padding:22px 26px;--glow-x:50%;--glow-y:50%;--glow-intensity:0;--glow-radius:300px;cursor:default;word-wrap:break-word;overflow-wrap:break-word}
+.magic-bento-card{will-change:transform}
+.magic-bento-card:hover{box-shadow:0 8px 32px rgba(0,0,0,.25)}
+.magic-bento-card--border-glow::after{content:'';position:absolute;inset:0;padding:2px;background:radial-gradient(var(--glow-radius) circle at var(--glow-x) var(--glow-y),rgba(196,138,48,calc(var(--glow-intensity)*.85)) 0%,rgba(196,138,48,calc(var(--glow-intensity)*.4)) 25%,rgba(196,138,48,calc(var(--glow-intensity)*.15)) 50%,transparent 65%);border-radius:inherit;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;pointer-events:none;opacity:0;transition:opacity .35s;z-index:0}
+.magic-bento-card--border-glow:hover::after{opacity:1}
+.magic-bento-card>*{position:relative;z-index:1}
+.global-spotlight{position:fixed;width:1480px;height:1480px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(196,138,48,.18) 0%,rgba(196,138,48,.09) 15%,rgba(196,138,48,.04) 28%,rgba(196,138,48,.015) 45%,transparent 65%);z-index:50;opacity:0;transform:translate(-50%,-50%);mix-blend-mode:screen;will-change:transform,opacity}
+.particle{position:fixed;width:4px;height:4px;border-radius:50%;background:rgba(196,138,48,.9);box-shadow:0 0 10px rgba(196,138,48,.6),0 0 20px rgba(196,138,48,.2);pointer-events:none;z-index:100;display:none}
+.particle{position:absolute;width:3px;height:3px;border-radius:50%;background:rgba(196,138,48,.8);box-shadow:0 0 8px rgba(196,138,48,.5);pointer-events:none;z-index:100}
+.ripple{position:absolute;border-radius:50%;pointer-events:none;z-index:1000}
+
+@media(min-width:768px){.card-grid{grid-template-columns:repeat(2,1fr)}.magic-bento-card.card-wide{grid-column:span 2}.magic-bento-card.card-s2{grid-column:span 2}}
+@media(min-width:1100px){.card-grid{grid-template-columns:repeat(4,1fr);gap:16px}.magic-bento-card.card-s2{grid-column:span 2}}
+@media(max-width:767px){.card-grid{padding:12px 16px;gap:10px}.magic-bento-card{padding:16px 18px}.magic-bento-card.card-wide,.magic-bento-card.card-s2{grid-column:span 1}}
 </style>
 </head>
 <body>
+<canvas id="auroraCanvas"></canvas>
+<canvas id="fluidCanvas" style="position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:100;display:block"></canvas>
 <svg style="position:absolute;width:0;height:0;pointer-events:none" aria-hidden="true">
   <defs>
     <filter id="paintEdge" x="-8%" y="-8%" width="116%" height="116%">
@@ -472,15 +518,8 @@ footer .ft-icon{margin-bottom:8px;opacity:.18}
 <!-- Dust particles -->
 <canvas id="dust"></canvas>
 
-<!-- Paint blobs -->
-<div class="paint-blob pb1"></div>
-<div class="paint-blob pb2"></div>
-<div class="paint-blob pb3"></div>
-<!-- Watercolor overlay -->
-<div class="watercolor"></div>
-
 <!-- Cityscape -->
-<div class="city">
+<div class="city" style="display:none">
   <div class="sky"></div><div class="stars"></div><div class="moon"></div>
   <div class="bld b1"></div><div class="bld b2"></div><div class="bld b3"></div><div class="bld b4"></div><div class="bld b5"></div><div class="bld b6"></div><div class="bld b7"></div><div class="bld b8"></div><div class="bld b9"></div><div class="bld b10"></div>
   <div class="tower"></div><div class="tower-top"></div><div class="tower-spire"></div><div class="clock-face"></div>
@@ -492,35 +531,83 @@ footer .ft-icon{margin-bottom:8px;opacity:.18}
 <!-- Side bookmark nav -->
 <div class="side-nav" id="sideNav">
   <a href="#home" data-label="Home"></a>
+  <a href="#strengths" data-label="Strengths"></a>
   <a href="#about" data-label="About"></a>
   <a href="#skills" data-label="Skills"></a>
   <a href="#portfolio" data-label="Works"></a>
   <a href="#experience" data-label="Experience"></a>
   <a href="#brands" data-label="Brands"></a>
+  <a href="#social" data-label="Social"></a>
   <a href="#contact" data-label="Contact"></a>
 </div>
 
 <!-- Top nav -->
 <nav>
-  <a href="#home">Home</a><a href="#about">About</a><a href="#skills">Skills</a><a href="#portfolio">Works</a><a href="#experience">Experience</a><a href="#brands">Brands</a><a href="#contact">Contact</a>
+  <a href="#home">Home</a><a href="#strengths">Strengths</a><a href="#about">About</a><a href="#skills">Skills</a><a href="#portfolio">Works</a><a href="#experience">Experience</a><a href="#brands">Brands</a><a href="#social">Social</a><a href="#contact">Contact</a>
 </nav>
 
+<div class="card-grid" id="bentoGrid">
 <!-- Hero -->
-<section class="hero" id="home">
-  <div class="ticket">Content Creator &amp; Film Editor</div>
-  <div class="aka">陈晨 / Chenchen <span>·</span> 战略计 / Zhanlueji <span>·</span> 哈利的屁股蛋</div>
-  <h1>陈晨<br><em>Chenchen</em></h1>
-  <p class="tagline">全平台内容创作者 · 电影宣发剪辑 · 视觉中国签约摄影师<br>为环球影业、万达电影、猫眼、网易云音乐等品牌提供社媒创意内容</p>
-  <div class="hero-stats">
+<section class="hero magic-bento-card magic-bento-card--border-glow card-s2" id="home">
+  <div class="hero-about">
+    <div class="hero-role">Content Creator · Film Editor · Photographer</div>
+    <h1>陈晨 <em>Chenchen</em></h1>
+    <p class="hero-bio">5 年深耕视觉内容创作，从个人账号起步成长为<strong>跨平台 5000 万+播放量</strong>的全职内容创作者。为环球影业、万达电影、猫眼、网易云音乐等品牌提供电影级社媒宣传内容。视觉中国 500px 签约摄影师，以剪辑与创意驱动流量增长。</p>
+    <div class="hero-tags">
+      <span class="hero-chip">Premiere Pro</span>
+      <span class="hero-chip">After Effects</span>
+      <span class="hero-chip">DaVinci Resolve</span>
+      <span class="hero-chip">电影宣发</span>
+      <span class="hero-chip">全平台运营</span>
+      <span class="hero-chip">English</span>
+    </div>
+  </div>
+  <div class="hero-metrics">
+    <div class="hero-stat"><div class="num"><span class="counter" data-target="50000000">0</span>+</div><div class="lbl">跨平台总播放</div></div>
+    <div class="hero-stat"><div class="num"><span class="counter" data-target="8920000">0</span>+</div><div class="lbl">全网累计获赞</div></div>
+    <div class="hero-stat"><div class="num"><span class="counter" data-target="5">0</span></div><div class="lbl">年海外运营</div></div>
     <div class="hero-stat"><div class="num"><span class="counter" data-target="100000">0</span>+</div><div class="lbl">全网粉丝</div></div>
-    <div class="hero-stat"><div class="num"><span class="counter" data-target="1000000">0</span>+</div><div class="lbl">累计赞藏</div></div>
-    <div class="hero-stat"><div class="num"><span class="counter" data-target="5">0</span> 年</div><div class="lbl">海外运营经验</div></div>
-    <div class="hero-stat"><div class="num"><span class="counter" data-target="16000">0</span>+</div><div class="lbl">YouTube 订阅</div></div>
+  </div>
+</section>
+
+<!-- Core Strengths -->
+<section class="magic-bento-card magic-bento-card--border-glow card-s2" id="strengths">
+  <div class="s-tag">✦ Core Strengths</div>
+  <h2 class="s-title">核心能力速览</h2>
+  <div class="strength-grid">
+    <div class="strength-item">
+      <div class="strength-icon">🎬</div>
+      <div class="strength-info">
+        <strong>电影级剪辑</strong>
+        <p>Premiere Pro 主力剪辑 · After Effects 动效合成 · DaVinci Resolve 专业调色 · 多机位同步 · Lumetri 色彩校正 · 代理剪辑工作流</p>
+      </div>
+    </div>
+    <div class="strength-item">
+      <div class="strength-icon">📷</div>
+      <div class="strength-info">
+        <strong>摄影摄像</strong>
+        <p>视觉中国 500px 签约摄影师 · 各型号无反/单反熟练操作 · 三点布光法 · 构图与色彩理论 · 自然光利用</p>
+      </div>
+    </div>
+    <div class="strength-item">
+      <div class="strength-icon">🌐</div>
+      <div class="strength-info">
+        <strong>跨平台运营</strong>
+        <p>抖音 282.2万获赞 · TikTok 3.7M获赞 · B站 3345.8万播放 · YouTube 播放破千万 · 小红书 2.4M获赞 · 全平台差异化策略</p>
+      </div>
+    </div>
+    <div class="strength-item">
+      <div class="strength-icon">🎯</div>
+      <div class="strength-info">
+        <strong>爆款方法论</strong>
+        <p>抖音 282.2万获赞 · TikTok 3.7M获赞 · B站 3345.8万播放 · YouTube 播放破千万 · 现象级爆款可复制</p>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- About -->
-<section id="about">
+<section id="about" class="magic-bento-card magic-bento-card--border-glow card-s2">
   <div class="s-tag reveal reveal-scale">✦ Core Competencies</div>
   <h2 class="s-title reveal reveal-scale">个人优势</h2>
   <p class="s-note reveal">五年深耕内容创作，从个人账号到顶级品牌，始终以视觉叙事为核心驱动力。</p>
@@ -530,14 +617,14 @@ footer .ft-icon{margin-bottom:8px;opacity:.18}
       <div class="page-body"><div class="page-body-inner">
         <p class="dropcap">统筹运营 Bilibili、小红书、YouTube、TikTok 等<strong>国内外主流平台</strong>，不仅独立跑通选题策划、脚本撰写、实拍执行、后期剪辑全流程，更擅长针对不同平台的算法逻辑与受众画像制定差异化内容策略。</p>
         <div class="sketch-line"></div>
-        <div class="highlight-box">全网粉丝累计近 <strong>10 万</strong>，YouTube 频道突破 <strong>1.6 万订阅</strong>，实现跨平台内容生态矩阵。</div>
+        <div class="highlight-box">全网粉丝累计近 <strong>10 万</strong>，YouTube 频道 <strong>1.6 万订阅、播放量破千万</strong>，B站总播放 <strong>3345.8 万</strong>，抖音 <strong>282.2 万获赞</strong>，TikTok <strong>3.7M 获赞</strong>，跨平台总播放量 <strong>5000 万+</strong>。</div>
         <p>核心能力在于将单一内容资产进行多平台适配分发，最大化内容复用率与传播效率——这是每一位高效创作者都需要掌握的底层能力。</p>
       </div></div>
     </div>
     <div class="page-card reveal reveal-right" onclick="toggleCard(this)">
       <div class="page-head"><div class="ph-left"><span class="page-num">02</span><div><h3>高爆发内容产出</h3><p class="ph-preview">累计赞藏 1,000,000+ · 现象级爆款逻辑</p></div></div><div class="page-toggle">+</div></div>
       <div class="page-body"><div class="page-body-inner">
-        <p class="dropcap">凭借对影视节奏、画面张力与情绪曲线的敏锐把控，个人作品累计赞藏量突破 <strong>1,000,000+</strong>，具备持续产出现象级爆款内容的底层方法论。</p>
+        <p class="dropcap">凭借对影视节奏、画面张力与情绪曲线的敏锐把控，个人作品累计赞藏突破 <strong>890 万+</strong>（抖音 282.2万 + TikTok 370万 + 小红书 240万），具备持续产出现象级爆款内容的底层方法论。</p>
         <div class="highlight-box">不只是「运气好出一款爆款」——而是理解爆款背后的<strong>叙事结构、节奏曲线、情绪触发点</strong>，可复制、可预测。</div>
         <div class="sketch-line"></div>
         <p>擅长类型：影视混剪、情绪短片、品牌宣传、社媒短视频。每一种类型都有成熟的内容模板和制作流程。</p>
@@ -547,7 +634,7 @@ footer .ft-icon{margin-bottom:8px;opacity:.18}
       <div class="page-head"><div class="ph-left"><span class="page-num">03</span><div><h3>顶级品牌合作背书</h3><p class="ph-preview">环球影业 · 万达电影 · 猫眼 · 网易云音乐</p></div></div><div class="page-toggle">+</div></div>
       <div class="page-body"><div class="page-body-inner">
         <p class="dropcap">曾直接为<strong>环球影业、万达电影、猫眼</strong>等头部平台及<strong>网易云音乐</strong>制作社媒宣传视频，涵盖多部全球知名 IP。</p>
-        <div class="highlight-box">合作影片：《阿凡达》《魔法坏女巫》《疯狂动物城》《忌日快乐》《死神来了》《坏蛋联盟》《马里奥银河》《侏罗纪世界》等——每一部都是全球观众熟知的名字。</div>
+        <div class="highlight-box">合作影片：《阿凡达》《魔法坏女巫》《疯狂动物城》《忌日快乐》《死神来了》《坏蛋联盟》《马里奥银河》《侏罗纪世界》《玩具总动员》《奥德赛》《家弑服务》等——每一部都是全球观众熟知的名字。</div>
         <p>在严格遵守官方品牌调性的前提下，通过创意剪辑与叙事重构，显著提升影片在各大社媒平台的话题热度与互动数据。</p>
       </div></div>
     </div>
@@ -555,7 +642,7 @@ footer .ft-icon{margin-bottom:8px;opacity:.18}
       <div class="page-head"><div class="ph-left"><span class="page-num">04</span><div><h3>跨文化传播能力</h3><p class="ph-preview">5 年海外运营 · 英文工作语言 · SEO 优化</p></div></div><div class="page-toggle">+</div></div>
       <div class="page-body"><div class="page-body-inner">
         <p class="dropcap">拥有 <strong>5 年海外社交媒体独立运营经验</strong>，深入了解海外受众的内容消费偏好、平台版权规则（Fair Use、Content ID）与 SEO 优化策略。</p>
-        <div class="highlight-box">全英文撰写标题、描述、标签及评论区互动，英语具备 Professional Working Proficiency（雅思模考 6.0），理解中西方内容审美差异。</div>
+        <div class="highlight-box">全英文撰写标题、描述、标签及评论区互动，可熟练与海外用户进行邮件及口头沟通，理解中西方内容审美差异。</div>
         <p>能在两种文化语境中自如切换创作视角——既懂国内流量玩法，也懂海外内容生态。这是稀缺的复合能力。</p>
       </div></div>
     </div>
@@ -563,7 +650,7 @@ footer .ft-icon{margin-bottom:8px;opacity:.18}
 </section>
 
 <!-- Skills -->
-<section id="skills">
+<section id="skills" class="magic-bento-card magic-bento-card--border-glow card-s2">
   <div class="s-tag reveal reveal-scale">✦ Technical Skills</div>
   <h2 class="s-title reveal reveal-scale">专业技能</h2>
   <p class="s-note reveal">点击展开查看各工具的详细熟练度与具体应用场景。</p>
@@ -594,69 +681,32 @@ footer .ft-icon{margin-bottom:8px;opacity:.18}
 </section>
 
 <!-- Portfolio Gallery -->
-<section id="portfolio">
+<section id="portfolio" class="magic-bento-card magic-bento-card--border-glow card-s2 portfolio-section">
   <div class="s-tag reveal">✦ Selected Works</div>
   <h2 class="s-title reveal">作品集</h2>
-  <p class="s-note reveal">点击纸条切换展示主题，再从右侧平台入口前往真实作品主页。</p>
+  <p class="s-note reveal">选择作品浏览视频与各平台数据。</p>
+  <div class="work-tabs reveal" id="workList">
+    <button class="work-card-sel active" type="button" data-title="Modesta" data-label="Cross-platform Hit" data-desc="同一支作品在小红书、抖音、TikTok、Bilibili、YouTube 多平台分发，其中抖音播放 528.5 万，TikTok 播放 336.4 万。" data-video="works/modesta.mp4" data-url="#">🎬 Modesta</button>
+    <button class="work-card-sel" type="button" data-title="妈 妈" data-label="Douyin Hit" data-desc="抖音爆款剪辑作品，单一平台 154 万播放。情感叙事风格引发用户共鸣。" data-video="works/mama.mp4" data-url="https://www.douyin.com/user/MS4wLjABAAAAF2rbajGaBq1jJsDm_v7n3cQ-cjFAk0eM2Ci__MuGJK8">🎭 妈 妈</button>
+    <button class="work-card-sel" type="button" data-title="姐姐好像白龙！" data-label="Cross-platform" data-desc="小红书+抖音+B站多平台分发，千与千寻主题创意剪辑。抖音 111 万播放。" data-video="works/bailong.mp4" data-url="https://xhslink.com/m/A5RdpaUOura">🐉 姐姐好像白龙！</button>
+    <button class="work-card-sel" type="button" data-title="电影宣发剪辑" data-label="Film Campaign" data-desc="为环球影业、万达电影、猫眼、网易云音乐等制作社媒宣传短片。" data-url="https://www.youtube.com/@zhanlueji2880">🎞️ 电影宣发</button>
+    <button class="work-card-sel" type="button" data-title="YouTube 频道" data-label="YouTube" data-desc="独立运营影视二次创作频道，英文 SEO、封面包装和标题策略共同驱动内容增长。" data-url="https://www.youtube.com/@zhanlueji2880">▶️ YouTube</button>
+    <button class="work-card-sel" type="button" data-title="国内平台矩阵" data-label="CN Platforms" data-desc="Bilibili、小红书、抖音同步运营，因地制宜调整选题与剪辑节奏。" data-url="https://b23.tv/wSSc8im">📱 国内平台</button>
+    <button class="work-card-sel" type="button" data-title="TikTok 矩阵" data-label="TikTok" data-desc="熟悉短视频算法推荐机制与趋势捕捉。单条最高 336万播放。" data-url="https://www.tiktok.com/@zhanlueji.zlj">🎵 TikTok</button>
+  </div>
   <div class="portfolio-player reveal">
-    <div class="player-frame playing" id="workPlayer">
-      <video class="player-video" id="workVideo" muted playsinline loop preload="metadata" src="works/modesta.mp4"></video>
-      <div class="player-sky"></div>
-      <div class="player-scene"></div>
-      <div class="player-city"></div>
-      <div class="player-tower"></div>
-      <div class="player-lines"></div>
-      <button class="play-button" type="button" onclick="openActiveWork()">open</button>
+    <div class="player-main">
+      <div class="player-frame" id="workPlayer">
+        <video class="player-video" id="workVideo" muted playsinline loop preload="auto" src="works/modesta.mp4"></video>
+        <button class="play-button" type="button" onclick="openActiveWork()" title="播放 / 暂停">▶</button>
+      </div>
       <div class="player-caption">
         <span class="player-label" id="playerLabel">Cross-platform Hit</span>
         <h3 class="player-title" id="playerTitle">Modesta</h3>
         <p class="player-desc" id="playerDesc">同一支作品在小红书、抖音、TikTok、Bilibili、YouTube 多平台分发，其中抖音播放 528.5 万，TikTok 播放 336.4 万。</p>
       </div>
     </div>
-    <aside class="work-panel">
-      <!-- 作品选择卡片 -->
-      <div class="work-selector" id="workList">
-        <button class="work-card-sel active" type="button" data-title="Modesta" data-label="Cross-platform Hit" data-desc="同一支作品在小红书、抖音、TikTok、Bilibili、YouTube 多平台分发，其中抖音播放 528.5 万，TikTok 播放 336.4 万。" data-video="works/modesta.mp4" data-url="#">
-          <span class="wcs-icon">🎬</span>
-          <div class="wcs-info">
-            <strong>Modesta</strong>
-            <span>跨平台现象级爆款 · 抖音 528.5万 播放</span>
-          </div>
-          <span class="wcs-arrow">→</span>
-        </button>
-        <button class="work-card-sel" type="button" data-title="电影宣发剪辑" data-label="Film Campaign" data-desc="为环球影业、万达电影、猫眼、网易云音乐等制作社媒宣传短片，覆盖《阿凡达》《魔法坏女巫》《疯狂动物城》等全球知名 IP。" data-url="#">
-          <span class="wcs-icon">🎞️</span>
-          <div class="wcs-info">
-            <strong>电影宣发</strong>
-            <span>环球影业 / 万达电影 / 猫眼 · 8+ IP</span>
-          </div>
-          <span class="wcs-arrow">→</span>
-        </button>
-        <button class="work-card-sel" type="button" data-title="YouTube 频道" data-label="YouTube" data-desc="独立运营影视二次创作频道，英文 SEO、封面包装和标题策略共同驱动内容增长，1.6万+订阅。" data-url="#">
-          <span class="wcs-icon">▶️</span>
-          <div class="wcs-info">
-            <strong>YouTube</strong>
-            <span>1.6w+ 订阅 · 英文 SEO 海外运营</span>
-          </div>
-          <span class="wcs-arrow">→</span>
-        </button>
-        <button class="work-card-sel" type="button" data-title="国内平台矩阵" data-label="CN Platforms" data-desc="Bilibili、小红书、抖音同步运营，因地制宜调整选题与剪辑节奏。全网粉丝 10万+。" data-url="#">
-          <span class="wcs-icon">📱</span>
-          <div class="wcs-info">
-            <strong>国内平台</strong>
-            <span>Bilibili / 小红书 / 抖音 · 10万+ 粉丝</span>
-          </div>
-          <span class="wcs-arrow">→</span>
-        </button>
-        <button class="work-card-sel" type="button" data-title="TikTok 矩阵" data-label="TikTok" data-desc="熟悉短视频算法推荐机制与趋势捕捉，把影视内容拆解成适合快速传播的短视频单元。单条最高 336万播放。" data-url="#">
-          <span class="wcs-icon">🎵</span>
-          <div class="wcs-info">
-            <strong>TikTok</strong>
-            <span>短视频矩阵 · 单条最高 336万 播放</span>
-          </div>
-          <span class="wcs-arrow">→</span>
-        </button>
-      </div>
+    <div class="work-data-panel">
       <!-- 数据面板 -->
       <div class="platform-card">
         <h3 id="dataTitle">Modesta · 数据表现</h3>
@@ -668,21 +718,19 @@ footer .ft-icon{margin-bottom:8px;opacity:.18}
           <div class="platform-item"><div class="pf-name">YouTube</div><div class="metrics-grid"><div class="metric"><div class="m-num plays counter" data-target="19000">0</div><div class="m-label">播放</div></div></div></div>
         </div>
       </div>
-      <div class="work-note">
         <div class="platform-links">
-          <a href="#" target="_blank" rel="noopener">📕 小红书</a>
-          <a href="#" target="_blank" rel="noopener">🎵 抖音</a>
-          <a href="#" target="_blank" rel="noopener">🌐 TikTok</a>
-          <a href="#" target="_blank" rel="noopener">📺 Bilibili</a>
-          <a href="#" target="_blank" rel="noopener">▶️ YouTube</a>
-        </div>
+          <a href="https://xhslink.com/m/A5RdpaUOura" target="_blank" rel="noopener">📕 小红书</a>
+          <a href="https://www.douyin.com/user/MS4wLjABAAAAF2rbajGaBq1jJsDm_v7n3cQ-cjFAk0eM2Ci__MuGJK8" target="_blank" rel="noopener">🎵 抖音</a>
+          <a href="https://www.tiktok.com/@zhanlueji.zlj" target="_blank" rel="noopener">🌐 TikTok</a>
+          <a href="https://b23.tv/wSSc8im" target="_blank" rel="noopener">📺 Bilibili</a>
+          <a href="https://www.youtube.com/@zhanlueji2880" target="_blank" rel="noopener">▶️ YouTube</a>
       </div>
-    </aside>
+    </div>
   </div>
 </section>
 
 <!-- Experience -->
-<section id="experience">
+<section id="experience" class="magic-bento-card magic-bento-card--border-glow card-s2">
   <div class="s-tag reveal">✦ Professional Experience</div>
   <h2 class="s-title reveal">工作经历</h2>
   <p class="s-note reveal">从个人创作者到顶级品牌合作——内容质量是贯穿始终的核心。</p>
@@ -692,7 +740,7 @@ footer .ft-icon{margin-bottom:8px;opacity:.18}
       <div class="page-body"><div class="page-body-inner">
         <p style="color:var(--gold-dim);font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">至今</p>
         <p class="dropcap">独立运营国内外多平台内容矩阵，从零搭建账号体系，精准把握各平台算法逻辑与内容生态差异。</p>
-        <ul><li>YouTube 频道突破 <strong>1.6 万订阅</strong>，累计播放量稳步增长</li><li>TikTok 多账号运营，熟悉短视频算法推荐机制与趋势捕捉</li><li>Bilibili / 小红书同步分发，根据国内受众调整选题与剪辑节奏</li><li>全英文 SEO 优化（标题/描述/标签），实现海外搜索流量稳健增长</li><li>深耕影视素材二次创作，全网累计 <strong>百万级赞藏</strong></li></ul>
+        <ul><li>YouTube 频道 <strong>1.6 万订阅、播放量破千万</strong>，全英文 SEO 驱动海外流量增长</li><li>TikTok <strong>3.7M 获赞</strong>，熟悉短视频算法推荐机制与全球化趋势捕捉</li><li>Bilibili 总播放 <strong>3345.8 万</strong>，小红书 <strong>2.4M 获赞</strong>，国内平台矩阵协同增长</li><li>抖音 <strong>282.2 万获赞</strong>，深耕影视素材二次创作与情绪短片</li><li>跨平台总播放量 <strong>5000 万+</strong>，全网累计获赞 <strong>890 万+</strong></li></ul>
       </div></div>
     </div>
     <div class="page-card reveal" onclick="toggleCard(this)">
@@ -700,7 +748,7 @@ footer .ft-icon{margin-bottom:8px;opacity:.18}
       <div class="page-body"><div class="page-body-inner">
         <p style="color:var(--gold-dim);font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">项目制合作</p>
         <p class="dropcap">受邀对接国内顶级宣发平台及好莱坞片方，负责电影社媒宣传短片的剪辑与二次创作。</p>
-        <ul><li>合作机构：<strong>猫眼、万达电影、环球影业、网易云音乐</strong></li><li>合作 IP：《阿凡达》《魔法坏女巫》《疯狂动物城》《忌日快乐》《死神来了》《坏蛋联盟》《马里奥银河》《侏罗纪世界》等</li><li>在满足品牌官方调性的基础上，通过创意剪辑与叙事重构显著提升话题热度</li><li>理解院线电影宣发周期与社媒内容节奏的配合逻辑</li></ul>
+        <ul><li>合作机构：<strong>猫眼、万达电影、环球影业、网易云音乐</strong></li><li>合作 IP：《阿凡达》《魔法坏女巫》《疯狂动物城》《忌日快乐》《死神来了》《坏蛋联盟》《马里奥银河》《侏罗纪世界》《玩具总动员》《奥德赛》《家弑服务》等</li><li>在满足品牌官方调性的基础上，通过创意剪辑与叙事重构显著提升话题热度</li><li>理解院线电影宣发周期与社媒内容节奏的配合逻辑</li></ul>
       </div></div>
     </div>
     <div class="page-card reveal" onclick="toggleCard(this)">
@@ -723,33 +771,77 @@ footer .ft-icon{margin-bottom:8px;opacity:.18}
 </section>
 
 <!-- Brands -->
-<section id="brands">
+<section id="brands" class="magic-bento-card magic-bento-card--border-glow">
   <div class="s-tag reveal" style="text-align:center;display:block">✦ Brand Collaborations</div>
   <h2 class="s-title reveal" style="text-align:center">合作品牌与 IP</h2>
   <p class="s-note reveal" style="text-align:center;margin-left:auto;margin-right:auto">曾直接为以下机构及影片制作社媒宣传内容</p>
   <div class="brand-stage reveal">
     <div class="brands-grid"><span class="stamp dark">环球影业</span><span class="stamp dark">万达电影</span><span class="stamp dark">猫眼</span><span class="stamp dark">网易云音乐</span><span class="stamp dark">视觉中国 500px</span></div>
-    <div class="brands-grid"><span class="stamp">《阿凡达》</span><span class="stamp">《魔法坏女巫》</span><span class="stamp">《疯狂动物城》</span><span class="stamp">《忌日快乐》</span><span class="stamp">《死神来了》</span><span class="stamp">《坏蛋联盟》</span><span class="stamp">《马里奥银河》</span><span class="stamp">《侏罗纪世界》</span></div>
+    <div class="brands-grid"><span class="stamp">《阿凡达》</span><span class="stamp">《魔法坏女巫》</span><span class="stamp">《疯狂动物城》</span><span class="stamp">《忌日快乐》</span><span class="stamp">《死神来了》</span><span class="stamp">《坏蛋联盟》</span><span class="stamp">《马里奥银河》</span><span class="stamp">《侏罗纪世界》</span><span class="stamp">《玩具总动员》</span><span class="stamp">《奥德赛》</span><span class="stamp">《家弑服务》</span></div>
     <p class="brand-caption">这些名称不只是经历列表，更是你已经进入商业内容链路的证明。</p>
   </div>
 </section>
 
+<!-- Social Links -->
+<section class="magic-bento-card magic-bento-card--border-glow card-s2" id="social">
+  <div class="s-tag">✦ Find Me On</div>
+  <h2 class="s-title">社交媒体</h2>
+  <p class="s-note">点击下方平台卡片，直达我的主页</p>
+  <div class="social-grid">
+    <a href="https://www.douyin.com/user/MS4wLjABAAAAF2rbajGaBq1jJsDm_v7n3cQ-cjFAk0eM2Ci__MuGJK8" target="_blank" rel="noopener" class="social-card">
+      <span class="social-icon">🎵</span>
+      <span class="social-name">抖音</span>
+      <span class="social-handle">@哈利的屁股蛋</span>
+      <span class="social-stat">282.2万 获赞</span>
+    </a>
+    <a href="https://www.tiktok.com/@zhanlueji.zlj" target="_blank" rel="noopener" class="social-card">
+      <span class="social-icon">🌐</span>
+      <span class="social-name">TikTok</span>
+      <span class="social-handle">@zhanlueji.zlj</span>
+      <span class="social-stat">3.7M 获赞</span>
+    </a>
+    <a href="https://www.youtube.com/@zhanlueji2880" target="_blank" rel="noopener" class="social-card">
+      <span class="social-icon">▶️</span>
+      <span class="social-name">YouTube</span>
+      <span class="social-handle">@zhanlueji2880</span>
+      <span class="social-stat">播放量破千万</span>
+    </a>
+    <a href="https://b23.tv/wSSc8im" target="_blank" rel="noopener" class="social-card">
+      <span class="social-icon">📺</span>
+      <span class="social-name">Bilibili</span>
+      <span class="social-handle">战略计</span>
+      <span class="social-stat">3345.8万 播放</span>
+    </a>
+    <a href="https://xhslink.com/m/A5RdpaUOura" target="_blank" rel="noopener" class="social-card">
+      <span class="social-icon">📕</span>
+      <span class="social-name">小红书</span>
+      <span class="social-handle">@哈利的屁股蛋</span>
+      <span class="social-stat">2.4M 获赞</span>
+    </a>
+  </div>
+</section>
+
 <!-- Contact -->
-<section id="contact">
+<section id="contact" class="magic-bento-card magic-bento-card--border-glow">
   <div class="s-tag reveal">✦ Get in Touch</div>
   <h2 class="s-title reveal">联系方式</h2>
   <p class="s-note reveal">欢迎品牌合作、项目邀约与工作机会联系。</p>
   <div class="contact-row reveal">
-    <div class="cc-item"><div class="cc-label">邮箱</div><div class="cc-val">cchen9941@gmail.com</div></div>
-    <div class="cc-item"><div class="cc-label">TikTok / 抖音</div><div class="cc-val">哈利的屁股蛋</div></div>
-    <div class="cc-item"><div class="cc-label">小红书</div><div class="cc-val">哈利的屁股蛋</div></div>
-    <div class="cc-item"><div class="cc-label">YouTube / Bilibili</div><div class="cc-val">战略计 / zhanlueji</div></div>
+    <div class="cc-item"><div class="cc-label">邮箱</div><div class="cc-val"><a href="mailto:cchen9941@gmail.com" style="color:inherit;text-decoration:none">cchen9941@gmail.com</a></div></div>
+    <div class="cc-item"><div class="cc-label">抖音</div><div class="cc-val"><a href="https://www.douyin.com/user/MS4wLjABAAAAF2rbajGaBq1jJsDm_v7n3cQ-cjFAk0eM2Ci__MuGJK8" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">哈利的屁股蛋</a></div></div>
+    <div class="cc-item"><div class="cc-label">TikTok</div><div class="cc-val"><a href="https://www.tiktok.com/@zhanlueji.zlj" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">哈利的屁股蛋</a></div></div>
+    <div class="cc-item"><div class="cc-label">小红书</div><div class="cc-val"><a href="https://xhslink.com/m/A5RdpaUOura" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">哈利的屁股蛋</a></div></div>
+    <div class="cc-item"><div class="cc-label">YouTube / Bilibili</div><div class="cc-val"><a href="https://www.youtube.com/@zhanlueji2880" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">战略计</a> / <a href="https://b23.tv/wSSc8im" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">zhanlueji</a></div></div>
   </div>
   <div class="resume-ticket reveal">
-    <p><strong>下载简历</strong> · 完整的职业经历与作品集</p>
-    <button class="btn" onclick="alert('简历将在后续添加！')">⬇ Download Resume</button>
+    <p><strong>了解更多</strong> · 摄影作品集与完整职业经历</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <a class="btn" href="profolio/index.html" target="_blank">📷 摄影作品集</a>
+      <button class="btn" onclick="alert('简历将在后续添加！')">⬇ Download Resume</button>
+    </div>
   </div>
 </section>
+</div>
 
 <button class="music-btn off" id="musicBtn" title="背景音乐" onclick="toggleMusic()">🎵</button>
 <audio id="bgm" loop preload="auto" src="audio/Teeny Tiny Hooligans (5).mp3"></audio>
@@ -797,7 +889,7 @@ function animDust(t){
 requestAnimationFrame(animDust);
 
 // ===== 3D TILT SYSTEM (裸眼3D) =====
-(function initTilt3D(){
+(function initTilt3D(){return; // disabled in favor of GSAP MagicBento tilt
   if(!matchMedia('(hover:hover) and (pointer:fine)').matches)return;
   let tx=0,ty=0,crx=0,cry=0; // cursor real x/y
   const els=[];
@@ -869,11 +961,38 @@ function toggleCard(card){
   else playPaper(.03,1.5)
 }
 
+// ===== WORK DATA MAP =====
+const workDataMap={
+  'Modesta':{title:'Modesta · 数据表现',platforms:[
+    {name:'小红书',metrics:[{type:'plays',label:'播放',value:404118},{type:'likes',label:'点赞',value:75837},{type:'comments',label:'评论',value:575},{type:'saves',label:'收藏',value:2658}]},
+    {name:'抖音',metrics:[{type:'plays',label:'播放',value:5285000},{type:'likes',label:'点赞',value:797000},{type:'saves',label:'收藏',value:67000},{type:'shares',label:'分享',value:62000}]},
+    {name:'TikTok',metrics:[{type:'plays',label:'播放',value:3364000},{type:'likes',label:'点赞',value:760000},{type:'comments',label:'评论',value:1158},{type:'saves',label:'收藏',value:76000}]},
+    {name:'Bilibili',metrics:[{type:'plays',label:'播放',value:241000},{type:'likes',label:'点赞',value:41000},{type:'comments',label:'评论',value:190},{type:'saves',label:'收藏',value:3023}]},
+    {name:'YouTube',metrics:[{type:'plays',label:'播放',value:19000}]}
+  ]},
+  '妈 妈':{title:'妈 妈 · 数据表现',platforms:[
+    {name:'抖音',metrics:[{type:'plays',label:'播放',value:1543000},{type:'likes',label:'点赞',value:144000},{type:'comments',label:'评论',value:681}]},
+    {name:'Bilibili',metrics:[{type:'plays',label:'播放',value:16000},{type:'likes',label:'点赞',value:1973},{type:'comments',label:'评论',value:23},{type:'coins',label:'投币',value:27},{type:'saves',label:'收藏',value:370}]}
+  ]},
+  '姐姐好像白龙！':{title:'姐姐好像白龙！· 数据表现',platforms:[
+    {name:'小红书',metrics:[{type:'plays',label:'播放',value:96149},{type:'likes',label:'点赞',value:12332},{type:'comments',label:'评论',value:280},{type:'saves',label:'收藏',value:2048}]},
+    {name:'抖音',metrics:[{type:'plays',label:'播放',value:1111000},{type:'likes',label:'点赞',value:121000},{type:'comments',label:'评论',value:1402},{type:'shares',label:'分享',value:18000}]},
+    {name:'Bilibili',metrics:[{type:'plays',label:'播放',value:45000},{type:'likes',label:'点赞',value:7907},{type:'comments',label:'评论',value:71},{type:'coins',label:'投币',value:233},{type:'saves',label:'收藏',value:2709}]}
+  ]}
+};
+function buildDataHTML(title){
+  const d=workDataMap[title];if(!d)return '';
+  return d.platforms.map(p=>{
+    const ms=p.metrics.map(m=>`<div class="metric"><div class="m-num ${m.type} counter" data-target="${m.value}">0</div><div class="m-label">${m.label}</div></div>`).join('');
+    return `<div class="platform-item"><div class="pf-name">${p.name}</div><div class="metrics-grid">${ms}</div></div>`;
+  }).join('');
+}
+
 // ===== WORK PLAYER =====
 let activeWorkUrl='#';
 const workVideo=document.getElementById('workVideo');
 const workPlayer=document.getElementById('workPlayer');
-const defaultData=document.getElementById('workData').innerHTML;
+const playBtn=document.querySelector('.play-button');
 document.querySelectorAll('.work-card-sel').forEach(card=>{
   card.addEventListener('click',()=>{
     document.querySelectorAll('.work-card-sel').forEach(t=>t.classList.remove('active'));
@@ -883,31 +1002,45 @@ document.querySelectorAll('.work-card-sel').forEach(card=>{
     document.getElementById('playerDesc').textContent=card.dataset.desc;
     activeWorkUrl=card.dataset.url||'#';
     if(card.dataset.video){
-      if(workVideo.getAttribute('src')!==card.dataset.video) workVideo.src=card.dataset.video;
-      workPlayer.classList.add('has-video','playing');
-      workVideo.play().catch(()=>{});
-      document.getElementById('dataTitle').textContent='Modesta · 数据表现';
-      document.getElementById('workData').innerHTML=defaultData;
+      workVideo.pause();
+      workVideo.style.opacity='0';
+      if(workVideo.getAttribute('src')!==card.dataset.video){workVideo.src=card.dataset.video}
+      workPlayer.classList.add('has-video');
+      workPlayer.classList.remove('playing');
+      playBtn.textContent='▶';
+      setTimeout(()=>{workVideo.style.opacity='1'},200);
+      const h=buildDataHTML(card.dataset.title);
+      if(h){const panel=document.querySelector('.work-data-panel');panel.classList.add('switching');document.getElementById('dataTitle').textContent=workDataMap[card.dataset.title].title;document.getElementById('workData').innerHTML=h;setTimeout(()=>{panel.classList.remove('switching');document.querySelectorAll('#workData .counter[data-target]').forEach(c=>{delete c.dataset.done;animCounter(c)})},150)}
     }else{
       workVideo.pause();
-      workPlayer.classList.remove('has-video');
+      workPlayer.classList.remove('has-video','playing');
+      playBtn.textContent='▶';
       document.getElementById('dataTitle').textContent='平台与数据';
-      document.getElementById('workData').innerHTML='<div class="platform-item"><div class="pf-name">全平台</div><div class="metrics-grid"><div class="metric"><div class="m-num likes counter" data-target="100000">0</div><div class="m-label">全网粉丝</div></div><div class="metric"><div class="m-num likes counter" data-target="1000000">0</div><div class="m-label">累计赞藏</div></div><div class="metric"><div class="m-num subs counter" data-target="16000">0</div><div class="m-label">YouTube订阅</div></div><div class="metric"><div class="m-num plays counter" data-target="5">0</div><div class="m-label">海外运营(年)</div></div></div></div>'; setTimeout(()=>document.querySelectorAll('#workData .counter[data-target]').forEach(c=>animCounter(c)),100);
-      workPlayer.classList.remove('playing');
-      void workPlayer.offsetWidth;
-      workPlayer.classList.add('playing');
+      document.getElementById('workData').innerHTML='<div class="platform-item"><div class="pf-name">全平台</div><div class="metrics-grid"><div class="metric"><div class="m-num likes counter" data-target="100000">0</div><div class="m-label">全网粉丝</div></div><div class="metric"><div class="m-num likes counter" data-target="1000000">0</div><div class="m-label">累计赞藏</div></div><div class="metric"><div class="m-num subs counter" data-target="16000">0</div><div class="m-label">YouTube订阅</div></div><div class="metric"><div class="m-num plays counter" data-target="5">0</div><div class="m-label">海外运营(年)</div></div></div></div>';setTimeout(()=>document.querySelectorAll('#workData .counter[data-target]').forEach(c=>{delete c.dataset.done;animCounter(c)}),100);
     }
   })
 })
 function openActiveWork(){
   playPaper(.07,.8);
-  if(workPlayer.classList.contains('has-video')){
-    if(workVideo.paused) workVideo.play().catch(()=>{}); else workVideo.pause();
-  }else if(activeWorkUrl&&activeWorkUrl!=='#') window.open(activeWorkUrl,'_blank','noopener');
-  else alert('把作品链接发给我后，这里会跳转到对应平台。');
+  if(!workPlayer.classList.contains('has-video')){
+    if(activeWorkUrl&&activeWorkUrl!=='#') window.open(activeWorkUrl,'_blank','noopener');
+    else alert('把作品链接发给我后，这里会跳转到对应平台。');
+    return;
+  }
+  workVideo.muted=false;
+  if(workVideo.paused){workVideo.play()}else{workVideo.pause()}
 }
+workPlayer.addEventListener('click',e=>{if(e.target===workPlayer||e.target.classList.contains('player-sky')||e.target.classList.contains('player-scene'))openActiveWork()})
+workVideo.addEventListener('play',()=>{playBtn.textContent='⏸';workPlayer.classList.add('playing')})
+workVideo.addEventListener('pause',()=>{playBtn.textContent='▶';workPlayer.classList.remove('playing')})
+workVideo.addEventListener('loadedmetadata',()=>{
+  workPlayer.classList.remove('ratio-4-3','ratio-3-4','ratio-1-1');
+  const r=workVideo.videoWidth/workVideo.videoHeight;
+  if(r>1.2)workPlayer.classList.add('ratio-4-3');
+  else if(r<0.85)workPlayer.classList.add('ratio-3-4');
+  else workPlayer.classList.add('ratio-1-1');
+})
 workPlayer.classList.add('has-video');
-workVideo.play().catch(()=>{});
 
 // ===== COUNTER =====
 function animCounter(el){if(el.dataset.done)return;el.dataset.done='1';const tgt=parseInt(el.dataset.target),dur=1800,st=performance.now();function up(now){const p=Math.min((now-st)/dur,1),e=1-Math.pow(1-p,3),cur=Math.floor(e*tgt);el.textContent=tgt>=1e5?(cur/1e4).toFixed(1)+'w':cur.toLocaleString();if(p<1)requestAnimationFrame(up);else el.textContent=tgt>=1e5?(tgt/1e4).toFixed(1)+'w':tgt.toLocaleString()}requestAnimationFrame(up)}
@@ -975,6 +1108,338 @@ document.addEventListener('click',fallbackPlay,{once:true})
 document.addEventListener('scroll',fallbackPlay,{once:true})
 document.addEventListener('keydown',fallbackPlay,{once:true})
 document.addEventListener('touchstart',fallbackPlay,{once:true})
+</script>
+<script type="module">
+import { Renderer, Program, Mesh, Color, Triangle } from 'ogl';
+
+const VERT = `#version 300 es
+in vec2 position;
+void main() {
+  gl_Position = vec4(position, 0.0, 1.0);
+}`;
+
+const FRAG = `#version 300 es
+precision highp float;
+uniform float uTime;
+uniform float uAmplitude;
+uniform vec3 uColorStops[3];
+uniform vec2 uResolution;
+uniform float uBlend;
+out vec4 fragColor;
+
+vec3 permute(vec3 x){return mod(((x*34.0)+1.0)*x,289.0);}
+
+float snoise(vec2 v){
+  const vec4 C=vec4(0.211324865405187,0.366025403784439,-0.577350269189626,0.024390243902439);
+  vec2 i=floor(v+dot(v,C.yy));
+  vec2 x0=v-i+dot(i,C.xx);
+  vec2 i1=(x0.x>x0.y)?vec2(1.0,0.0):vec2(0.0,1.0);
+  vec4 x12=x0.xyxy+C.xxzz;
+  x12.xy-=i1;
+  i=mod(i,289.0);
+  vec3 p=permute(permute(i.y+vec3(0.0,i1.y,1.0))+i.x+vec3(0.0,i1.x,1.0));
+  vec3 m=max(0.5-vec3(dot(x0,x0),dot(x12.xy,x12.xy),dot(x12.zw,x12.zw)),0.0);
+  m=m*m;m=m*m;
+  vec3 x=2.0*fract(p*C.www)-1.0;
+  vec3 h=abs(x)-0.5;
+  vec3 ox=floor(x+0.5);
+  vec3 a0=x-ox;
+  m*=1.79284291400159-0.85373472095314*(a0*a0+h*h);
+  vec3 g;
+  g.x=a0.x*x0.x+h.x*x0.y;
+  g.yz=a0.yz*x12.xz+h.yz*x12.yw;
+  return 130.0*dot(m,g);
+}
+
+void main(){
+  vec2 uv=gl_FragCoord.xy/uResolution;
+  vec3 leftC=uColorStops[0];
+  vec3 midC=uColorStops[1];
+  vec3 rightC=uColorStops[2];
+  vec3 color=uv.x<0.5?mix(leftC,midC,uv.x*2.0):mix(midC,rightC,(uv.x-0.5)*2.0);
+  float n=snoise(vec2(uv.x*3.0+uTime*0.08,uTime*0.12))*uAmplitude;
+  float band=exp(-abs(uv.y-0.45+n*0.25)/0.35);
+  float alpha=band*uBlend;
+  fragColor=vec4(color*alpha,alpha);
+}`;
+
+const canvas = document.getElementById('auroraCanvas');
+const renderer = new Renderer({canvas,alpha:true,premultipliedAlpha:true,antialias:true});
+const gl = renderer.gl;
+gl.clearColor(0,0,0,0);
+gl.enable(gl.BLEND);
+gl.blendFunc(gl.ONE,gl.ONE_MINUS_SRC_ALPHA);
+
+const geometry = new Triangle(gl);
+if(geometry.attributes.uv)delete geometry.attributes.uv;
+
+const colorStops = ['#1a3a5c','#2560a0','#c48a30'].map(hex=>{const c=new Color(hex);return[c.r,c.g,c.b]});
+
+const program = new Program(gl,{
+  vertex:VERT,fragment:FRAG,
+  uniforms:{
+    uTime:{value:0},uAmplitude:{value:1.0},uColorStops:{value:colorStops},
+    uResolution:{value:[innerWidth,innerHeight]},uBlend:{value:0.8}
+  }
+});
+
+const mesh = new Mesh(gl,{geometry,program});
+
+function resize(){
+  renderer.setSize(innerWidth,innerHeight);
+  program.uniforms.uResolution.value=[innerWidth,innerHeight];
+}
+window.addEventListener('resize',resize);
+
+function animate(t){
+  requestAnimationFrame(animate);
+  program.uniforms.uTime.value=t*0.001;
+  renderer.render({scene:mesh});
+}
+resize();
+requestAnimationFrame(animate);
+</script>
+<script>
+// ===== MAGIC BENTO EFFECTS ENHANCED =====
+const GLOW_COLOR='196,138,48';
+const SPOTLIGHT_RADIUS=740;
+const PROXIMITY=SPOTLIGHT_RADIUS*.5;
+const FADE_DIST=SPOTLIGHT_RADIUS*.75;
+const grid=document.getElementById('bentoGrid');
+const cards=grid.querySelectorAll('.magic-bento-card--border-glow');
+
+// --- Global Spotlight (enhanced) ---
+const spotlight=document.createElement('div');
+spotlight.className='global-spotlight';
+spotlight.style.cssText=`width:${SPOTLIGHT_RADIUS*2}px;height:${SPOTLIGHT_RADIUS*2}px`;
+document.body.appendChild(spotlight);
+
+let isInsideGrid=false;
+document.addEventListener('mousemove',e=>{
+  const rect=grid.getBoundingClientRect();
+  const inside=e.clientX>=rect.left&&e.clientX<=rect.right&&e.clientY>=rect.top&&e.clientY<=rect.bottom;
+
+  if(inside!==isInsideGrid){
+    isInsideGrid=inside;
+    gsap.to(spotlight,{opacity:inside?0.9:0,duration:inside?0.2:0.5,ease:'power2.out'});
+  }
+  gsap.to(spotlight,{left:e.clientX,top:e.clientY,duration:0.15,ease:'power2.out'});
+
+  if(!inside){cards.forEach(c=>c.style.setProperty('--glow-intensity','0'));return}
+
+  let minDist=Infinity;
+  cards.forEach(card=>{
+    const r=card.getBoundingClientRect();
+    const cx=r.left+r.width/2,cy=r.top+r.height/2;
+    const dist=Math.hypot(e.clientX-cx,e.clientY-cy)-Math.max(r.width,r.height)/2;
+    const effDist=Math.max(0,dist);
+    minDist=Math.min(minDist,effDist);
+    let glow=0;
+    if(effDist<=PROXIMITY)glow=1;
+    else if(effDist<=FADE_DIST)glow=(FADE_DIST-effDist)/(FADE_DIST-PROXIMITY);
+    card.style.setProperty('--glow-x',((e.clientX-r.left)/r.width*100).toFixed(1)+'%');
+    card.style.setProperty('--glow-y',((e.clientY-r.top)/r.height*100).toFixed(1)+'%');
+    card.style.setProperty('--glow-intensity',glow.toFixed(3));
+    card.style.setProperty('--glow-radius',SPOTLIGHT_RADIUS+'px');
+  });
+
+  const targetOpacity=minDist<=PROXIMITY?0.9:minDist<=FADE_DIST?((FADE_DIST-minDist)/(FADE_DIST-PROXIMITY))*0.9:0;
+  gsap.to(spotlight,{opacity:targetOpacity,duration:targetOpacity>0?0.2:0.5,ease:'power2.out'});
+});
+document.addEventListener('mouseleave',()=>{
+  isInsideGrid=false;
+  cards.forEach(c=>c.style.setProperty('--glow-intensity','0'));
+  gsap.to(spotlight,{opacity:0,duration:0.5,ease:'power2.out'});
+});
+
+// --- Enhanced Particles ---
+const PARTICLE_COUNT=14;
+const particleTemplates=[];
+cards.forEach(card=>{
+  const r=card.getBoundingClientRect();
+  for(let i=0;i<PARTICLE_COUNT;i++){
+    const el=document.createElement('div');
+    el.className='particle';
+    el.style.cssText=`left:${Math.random()*r.width}px;top:${Math.random()*r.height}px`;
+    particleTemplates.push({el:el.cloneNode(),card});
+  }
+});
+
+cards.forEach(card=>{
+  let hovered=false,spawnTimer=null; const activeParticles=[];
+
+  card.addEventListener('mouseenter',()=>{
+    hovered=true;
+    const spawn=()=>{
+      if(!hovered)return;
+      const myTemplates=particleTemplates.filter(p=>p.card===card);
+      for(let k=0;k<4;k++){
+        const tpl=myTemplates[Math.floor(Math.random()*myTemplates.length)];
+        const clone=tpl.el.cloneNode(true);
+        const cr=card.getBoundingClientRect();
+        clone.style.left=(cr.left+Math.random()*cr.width)+'px';
+        clone.style.top=(cr.top+Math.random()*cr.height)+'px';
+        clone.style.display='block';
+        document.body.appendChild(clone);
+        activeParticles.push(clone);
+        gsap.fromTo(clone,{scale:0,opacity:0},{scale:1,opacity:1,duration:.35,ease:'back.out(1.7)'});
+        gsap.to(clone,{x:(Math.random()-.5)*120,y:(Math.random()-.5)*120,rotation:Math.random()*360,duration:2.5+Math.random()*2,ease:'none',repeat:-1,yoyo:true});
+        gsap.to(clone,{opacity:.25,duration:1.8,ease:'power2.inOut',repeat:-1,yoyo:true});
+      }
+    };
+    spawn();spawnTimer=setInterval(spawn,250);
+  });
+
+  card.addEventListener('mouseleave',()=>{
+    hovered=false;clearInterval(spawnTimer);
+    activeParticles.forEach(p=>{
+      gsap.to(p,{scale:0,opacity:0,duration:.35,ease:'back.in(1.7)',onComplete:()=>{p.remove();gsap.killTweensOf(p)}});
+    });
+    activeParticles.length=0;
+  });
+
+  // --- Physics Engine (RAF-throttled) ---
+  const REPEL_ZONE=60, ATTRACT_ZONE=280, MAX_FORCE=14;
+  let mouseX=0,mouseY=0,isInsideGrid=true,rafId=null;
+  const cardTargets=new Map();
+  cards.forEach(c=>cardTargets.set(c,{x:0,y:0,rx:0,ry:0}));
+
+  document.addEventListener('mousemove',e=>{mouseX=e.clientX;mouseY=e.clientY});
+
+  function physicsTick(){
+    rafId=requestAnimationFrame(physicsTick);
+    cards.forEach(card=>{
+      const r=card.getBoundingClientRect();
+      const cx=r.left+r.width/2,cy=r.top+r.height/2;
+      const dx=mouseX-cx,dy=mouseY-cy;
+      const dist=Math.hypot(dx,dy);
+      const tgt=cardTargets.get(card);
+
+      if(dist>ATTRACT_ZONE||!isInsideGrid){
+        // Spring return: fast lerp back with overshoot feel
+        tgt.x+=(0-tgt.x)*.18;tgt.y+=(0-tgt.y)*.18;
+        tgt.rx+=(0-tgt.rx)*.18;tgt.ry+=(0-tgt.ry)*.18;
+      }else{
+        const nx=dx/(dist||1),ny=dy/(dist||1);
+        let force;
+        if(dist<REPEL_ZONE){force=-(1-dist/REPEL_ZONE)*MAX_FORCE}
+        else{const t=(dist-REPEL_ZONE)/(ATTRACT_ZONE-REPEL_ZONE);force=(1-t)*MAX_FORCE*.65}
+        const targetX=nx*force,targetY=ny*force;
+        const targetRX=-ny*(Math.abs(force)/MAX_FORCE)*10;
+        const targetRY=nx*(Math.abs(force)/MAX_FORCE)*10;
+        // Smooth lerp toward target
+        tgt.x+=(targetX-tgt.x)*.15;tgt.y+=(targetY-tgt.y)*.15;
+        tgt.rx+=(targetRX-tgt.rx)*.15;tgt.ry+=(targetRY-tgt.ry)*.15;
+      }
+      // Apply with sub-pixel precision
+      if(Math.abs(tgt.x)>.05||Math.abs(tgt.y)>.05||Math.abs(tgt.rx)>.05){
+        card.style.transform=`perspective(900px) translate3d(${tgt.x.toFixed(1)}px,${tgt.y.toFixed(1)}px,0) rotateX(${tgt.rx.toFixed(2)}deg) rotateY(${tgt.ry.toFixed(2)}deg)`;
+      }
+    });
+  }
+  requestAnimationFrame(physicsTick);
+
+  // --- Spring return on mouse leave grid ---
+  grid.addEventListener('mouseleave',()=>{isInsideGrid=false});
+  grid.addEventListener('mouseenter',()=>{isInsideGrid=true});
+
+  // --- Click Shockwave (skip if clicking interactive children) ---
+  cards.forEach((card,cardIdx)=>{
+    card.addEventListener('click',e=>{
+      if(e.target.closest('.page-card,.work-card-sel,.play-button,.btn,a,button:not(.magic-bento-card)'))return;
+      const r=card.getBoundingClientRect();
+      const x=e.clientX-r.left,y=e.clientY-r.top;
+      const maxD=Math.max(Math.hypot(x,y),Math.hypot(x-r.width,y),Math.hypot(x,y-r.height),Math.hypot(x-r.width,y-r.height));
+      const ripple=document.createElement('div');
+      ripple.className='ripple';
+      ripple.style.cssText=`width:${maxD*2}px;height:${maxD*2}px;left:${x-maxD}px;top:${y-maxD}px;background:radial-gradient(circle,rgba(${GLOW_COLOR},.2) 0%,rgba(${GLOW_COLOR},.1) 30%,rgba(${GLOW_COLOR},.03) 55%,transparent 70%);z-index:0`;
+      card.appendChild(ripple);
+      gsap.fromTo(ripple,{scale:0,opacity:1},{scale:1,opacity:0,duration:.9,ease:'power2.out',onComplete:()=>ripple.remove()});
+
+      const cr=card.getBoundingClientRect();
+      const scx=cr.left+cr.width/2,scy=cr.top+cr.height/2;
+      cards.forEach((other,j)=>{
+        if(j===cardIdx)return;
+        const or_=other.getBoundingClientRect();
+        const ocx=or_.left+or_.width/2,ocy=or_.top+or_.height/2;
+        const ddx=ocx-scx,ddy=ocy-scy,ddist=Math.hypot(ddx,ddy);
+        if(ddist>400)return;
+        const wave=(1-ddist/400)*8;
+        gsap.to(other,{x:ddx/(ddist||1)*wave,y:ddy/(ddist||1)*wave,duration:.2,ease:'power2.out',overwrite:'auto',
+          onComplete:()=>gsap.to(other,{x:0,y:0,duration:.8,ease:'elastic.out(1,0.3)',overwrite:'auto'})});
+      });
+    });
+  });
+});
+</script>
+<script>
+// ===== SPLASH CURSOR (WebGL Fluid) =====
+(function(){
+const canvas=document.getElementById('fluidCanvas');if(!canvas)return;
+const C={SR:128,DR:800,CR:512,DD:3.5,VD:2,PR:0.1,PI:20,CU:3,SR2:0.2,SF:6000,SH:true,CUS:10,TR:true,RM:false,CL:'#c48a30'};
+function PP(){this.id=-1;this.tx=0;this.ty=0;this.ptx=0;this.pty=0;this.dx=0;this.dy=0;this.down=false;this.moved=false;this.color=[0,0,0]}let pts=[new PP()];
+let gl=canvas.getContext('webgl2',{alpha:true,depth:false,stencil:false,antialias:false})||canvas.getContext('webgl',{alpha:true,depth:false,stencil:false,antialias:false});if(!gl)return;
+const wgl2=!!gl;let hf,slf;
+if(wgl2){gl.getExtension('EXT_color_buffer_float');slf=gl.getExtension('OES_texture_float_linear')}else{hf=gl.getExtension('OES_texture_half_float');slf=gl.getExtension('OES_texture_half_float_linear')}
+gl.clearColor(0,0,0,1);const hft=wgl2?gl.HALF_FLOAT:(hf&&hf.HALF_FLOAT_OES);
+function gsf(gl,inf,fmt,typ){if(!srtf(gl,inf,fmt,typ)){switch(inf){case gl.R16F:return gsf(gl,gl.RG16F,gl.RG,typ);case gl.RG16F:return gsf(gl,gl.RGBA16F,gl.RGBA,typ);default:return null}}return{internalFormat:inf,format:fmt}}
+function srtf(gl,inf,fmt,typ){const t=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,t);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);gl.texImage2D(gl.TEXTURE_2D,0,inf,4,4,0,fmt,typ,null);const f=gl.createFramebuffer();gl.bindFramebuffer(gl.FRAMEBUFFER,f);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,t,0);return gl.checkFramebufferStatus(gl.FRAMEBUFFER)===gl.FRAMEBUFFER_COMPLETE}
+let fRGBA, fRG, fR;
+if(wgl2){fRGBA=gsf(gl,gl.RGBA16F,gl.RGBA,hft);fRG=gsf(gl,gl.RG16F,gl.RG,hft);fR=gsf(gl,gl.R16F,gl.RED,hft)}else{fRGBA=gsf(gl,gl.RGBA,gl.RGBA,hft);fRG=gsf(gl,gl.RGBA,gl.RGBA,hft);fR=gsf(gl,gl.RGBA,gl.RGBA,hft)}
+function cs(type,src){const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);return s}
+function cp(vs,fs){const p=gl.createProgram();gl.attachShader(p,vs);gl.attachShader(p,fs);gl.linkProgram(p);return p}
+function gu(p){let u=[];const n=gl.getProgramParameter(p,gl.ACTIVE_UNIFORMS);for(let i=0;i<n;i++){const nm=gl.getActiveUniform(p,i).name;u[nm]=gl.getUniformLocation(p,nm)}return u}
+const bVS=cs(gl.VERTEX_SHADER,'precision highp float;attribute vec2 aPosition;varying vec2 vUv,vL,vR,vT,vB;uniform vec2 texelSize;void main(){vUv=aPosition*0.5+0.5;vL=vUv-vec2(texelSize.x,0.0);vR=vUv+vec2(texelSize.x,0.0);vT=vUv+vec2(0.0,texelSize.y);vB=vUv-vec2(0.0,texelSize.y);gl_Position=vec4(aPosition,0.0,1.0);}');
+const cpyS=cs(gl.FRAGMENT_SHADER,'precision mediump float;precision mediump sampler2D;varying highp vec2 vUv;uniform sampler2D uTexture;void main(){gl_FragColor=texture2D(uTexture,vUv);}');
+const clrS=cs(gl.FRAGMENT_SHADER,'precision mediump float;precision mediump sampler2D;varying highp vec2 vUv;uniform sampler2D uTexture;uniform float value;void main(){gl_FragColor=value*texture2D(uTexture,vUv);}');
+const dspSS='precision highp float;precision highp sampler2D;varying vec2 vUv,vL,vR,vT,vB;uniform sampler2D uTexture;uniform vec2 texelSize;void main(){vec3 c=texture2D(uTexture,vUv).rgb;vec3 lc=texture2D(uTexture,vL).rgb;vec3 rc=texture2D(uTexture,vR).rgb;vec3 tc=texture2D(uTexture,vT).rgb;vec3 bc=texture2D(uTexture,vB).rgb;float dx=length(rc)-length(lc);float dy=length(tc)-length(bc);vec3 n=normalize(vec3(dx,dy,length(texelSize)));c*=clamp(dot(n,vec3(0,0,1))+0.7,0.7,1.0);float a=max(c.r,max(c.g,c.b));gl_FragColor=vec4(c,a);}';
+const splS=cs(gl.FRAGMENT_SHADER,'precision highp float;precision highp sampler2D;varying vec2 vUv;uniform sampler2D uTarget;uniform float aspectRatio;uniform vec3 color;uniform vec2 point;uniform float radius;void main(){vec2 p=vUv-point.xy;p.x*=aspectRatio;vec3 splat=exp(-dot(p,p)/radius)*color;vec3 base=texture2D(uTarget,vUv).xyz;gl_FragColor=vec4(base+splat,1.0);}');
+const advS=cs(gl.FRAGMENT_SHADER,'precision highp float;precision highp sampler2D;varying vec2 vUv;uniform sampler2D uVelocity;uniform sampler2D uSource;uniform vec2 texelSize;uniform float dt;uniform float dissipation;void main(){vec2 coord=vUv-dt*texture2D(uVelocity,vUv).xy*texelSize;vec4 result=texture2D(uSource,coord);float decay=1.0+dissipation*dt;gl_FragColor=result/decay;}');
+const divS=cs(gl.FRAGMENT_SHADER,'precision mediump float;precision mediump sampler2D;varying highp vec2 vUv,vL,vR,vT,vB;uniform sampler2D uVelocity;void main(){float L=texture2D(uVelocity,vL).x;float R=texture2D(uVelocity,vR).x;float T=texture2D(uVelocity,vT).y;float B=texture2D(uVelocity,vB).y;vec2 C=texture2D(uVelocity,vUv).xy;if(vL.x<0.0)L=-C.x;if(vR.x>1.0)R=-C.x;if(vT.y>1.0)T=-C.y;if(vB.y<0.0)B=-C.y;float div=0.5*(R-L+T-B);gl_FragColor=vec4(div,0.0,0.0,1.0);}');
+const curS=cs(gl.FRAGMENT_SHADER,'precision mediump float;precision mediump sampler2D;varying highp vec2 vUv,vL,vR,vT,vB;uniform sampler2D uVelocity;void main(){float L=texture2D(uVelocity,vL).y;float R=texture2D(uVelocity,vR).y;float T=texture2D(uVelocity,vT).x;float B=texture2D(uVelocity,vB).x;gl_FragColor=vec4(0.5*(R-L-T+B),0.0,0.0,1.0);}');
+const vorS=cs(gl.FRAGMENT_SHADER,'precision highp float;precision highp sampler2D;varying vec2 vUv,vL,vR,vT,vB;uniform sampler2D uVelocity;uniform sampler2D uCurl;uniform float curl;uniform float dt;void main(){float L=texture2D(uCurl,vL).x;float R=texture2D(uCurl,vR).x;float T=texture2D(uCurl,vT).x;float B=texture2D(uCurl,vB).x;float C=texture2D(uCurl,vUv).x;vec2 force=0.5*vec2(abs(T)-abs(B),abs(R)-abs(L));force/=length(force)+0.0001;force*=curl*C;force.y*=-1.0;vec2 vel=texture2D(uVelocity,vUv).xy+force*dt;vel=min(max(vel,-1000.0),1000.0);gl_FragColor=vec4(vel,0.0,1.0);}');
+const preS=cs(gl.FRAGMENT_SHADER,'precision mediump float;precision mediump sampler2D;varying highp vec2 vUv,vL,vR,vT,vB;uniform sampler2D uPressure;uniform sampler2D uDivergence;void main(){float L=texture2D(uPressure,vL).x;float R=texture2D(uPressure,vR).x;float T=texture2D(uPressure,vT).x;float B=texture2D(uPressure,vB).x;float C=texture2D(uPressure,vUv).x;float div=texture2D(uDivergence,vUv).x;gl_FragColor=vec4((L+R+B+T-div)*0.25,0.0,0.0,1.0);}');
+const gsbS=cs(gl.FRAGMENT_SHADER,'precision mediump float;precision mediump sampler2D;varying highp vec2 vUv,vL,vR,vT,vB;uniform sampler2D uPressure;uniform sampler2D uVelocity;void main(){float L=texture2D(uPressure,vL).x;float R=texture2D(uPressure,vR).x;float T=texture2D(uPressure,vT).x;float B=texture2D(uPressure,vB).x;vec2 vel=texture2D(uVelocity,vUv).xy;vel.xy-=vec2(R-L,T-B);gl_FragColor=vec4(vel,0.0,1.0);}');
+gl.bindBuffer(gl.ARRAY_BUFFER,gl.createBuffer());gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,-1,1,1,1,1,-1]),gl.STATIC_DRAW);
+gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,gl.createBuffer());gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array([0,1,2,0,2,3]),gl.STATIC_DRAW);
+gl.vertexAttribPointer(0,2,gl.FLOAT,false,0,0);gl.enableVertexAttribArray(0);
+function blit(target,clear){if(target==null){gl.viewport(0,0,gl.drawingBufferWidth,gl.drawingBufferHeight);gl.bindFramebuffer(gl.FRAMEBUFFER,null)}else{gl.viewport(0,0,target.width,target.height);gl.bindFramebuffer(gl.FRAMEBUFFER,target.fbo)}if(clear){gl.clearColor(0,0,0,1);gl.clear(gl.COLOR_BUFFER_BIT)}gl.drawElements(gl.TRIANGLES,6,gl.UNSIGNED_SHORT,0)}
+let dye,vel,div,cur,pres;
+function Prog(vs,fs){this.p=cp(vs,fs);this.u=gu(this.p);this.bind=function(){gl.useProgram(this.p)}}
+function Mat(vs,fss){this.vs=vs;this.fss=fss;this.ps=[];this.ap=null;this.u=[];this.sk=function(kw){let h=0;for(let i=0;i<kw.length;i++)h+=hC(kw[i]);let p=this.ps[h];if(!p){let fs=cs(gl.FRAGMENT_SHADER,this.fss);p=cp(this.vs,fs);this.ps[h]=p}if(p===this.ap)return;this.u=gu(p);this.ap=p};this.bind=function(){gl.useProgram(this.ap)}}
+function cFBO(w,h,inf,fmt,typ,param){gl.activeTexture(gl.TEXTURE0);let t=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,t);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,param);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,param);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);gl.texImage2D(gl.TEXTURE_2D,0,inf,w,h,0,fmt,typ,null);let f=gl.createFramebuffer();gl.bindFramebuffer(gl.FRAMEBUFFER,f);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,t,0);gl.viewport(0,0,w,h);gl.clear(gl.COLOR_BUFFER_BIT);return{texture:t,fbo:f,width:w,height:h,tsX:1/w,tsY:1/h,attach:function(id){gl.activeTexture(gl.TEXTURE0+id);gl.bindTexture(gl.TEXTURE_2D,t);return id}}}
+function cDFBO(w,h,inf,fmt,typ,param){let f1=cFBO(w,h,inf,fmt,typ,param),f2=cFBO(w,h,inf,fmt,typ,param);return{width:w,height:h,tsX:f1.tsX,tsY:f1.tsY,get read(){return f1},set read(v){f1=v},get write(){return f2},set write(v){f2=v},swap(){let t=f1;f1=f2;f2=t}}}
+function rFBO(target,w,h,inf,fmt,typ,param){let n=cFBO(w,h,inf,fmt,typ,param);cpyP.bind();gl.uniform1i(cpyP.u.uTexture,target.attach(0));blit(n);return n}
+function rDFBO(target,w,h,inf,fmt,typ,param){if(target.width===w&&target.height===h)return target;target.read=rFBO(target.read,w,h,inf,fmt,typ,param);target.write=cFBO(w,h,inf,fmt,typ,param);target.width=w;target.height=h;target.tsX=1/w;target.tsY=1/h;return target}
+function gRes(res){let a=gl.drawingBufferWidth/gl.drawingBufferHeight;if(a<1)a=1/a;const mn=Math.round(res),mx=Math.round(res*a);return gl.drawingBufferWidth>gl.drawingBufferHeight?{width:mx,height:mn}:{width:mn,height:mx}}
+function sPR(input){return Math.floor(input*(window.devicePixelRatio||1))}
+function hC(s){if(s.length===0)return 0;let h=0;for(let i=0;i<s.length;i++){h=(h<<5)-h+s.charCodeAt(i);h|=0}return h}
+function iFB(){let sr=gRes(C.SR),dr=gRes(C.DR);const tt=hft,rgba=fRGBA,rg=fRG,r=fR;const flt=slf?gl.LINEAR:gl.NEAREST;gl.disable(gl.BLEND);dye=dye?rDFBO(dye,dr.width,dr.height,rgba.internalFormat,rgba.format,tt,flt):cDFBO(dr.width,dr.height,rgba.internalFormat,rgba.format,tt,flt);vel=vel?rDFBO(vel,sr.width,sr.height,rg.internalFormat,rg.format,tt,flt):cDFBO(sr.width,sr.height,rg.internalFormat,rg.format,tt,flt);div=cFBO(sr.width,sr.height,r.internalFormat,r.format,tt,gl.NEAREST);cur=cFBO(sr.width,sr.height,r.internalFormat,r.format,tt,gl.NEAREST);pres=cDFBO(sr.width,sr.height,r.internalFormat,r.format,tt,gl.NEAREST)}
+const cpyP=new Prog(bVS,cpyS),clrP=new Prog(bVS,clrS),splP=new Prog(bVS,splS),advP=new Prog(bVS,advS),divP=new Prog(bVS,divS),curP=new Prog(bVS,curS),vorP=new Prog(bVS,vorS),preP=new Prog(bVS,preS),gsbP=new Prog(bVS,gsbS),dspM=new Mat(bVS,dspSS);
+dspM.sk(['SHADING']);iFB();
+let lu=Date.now(),cut=0;
+function h2r(hex){let v=hex.replace('#','');if(v.length===3)v=v[0]+v[0]+v[1]+v[1]+v[2]+v[2];return{r:parseInt(v.slice(0,2),16)/255*0.15,g:parseInt(v.slice(2,4),16)/255*0.15,b:parseInt(v.slice(4,6),16)/255*0.15}}
+function gC(){if(!C.RM)return h2r(C.CL);let c=HSV(Math.random(),1,1);c.r*=0.15;c.g*=0.15;c.b*=0.15;return c}
+function HSV(h,s,v){let r,g,b,i,f,p,q,t;i=Math.floor(h*6);f=h*6-i;p=v*(1-s);q=v*(1-f*s);t=v*(1-(1-f)*s);switch(i%6){case 0:r=v;g=t;b=p;break;case 1:r=q;g=v;b=p;break;case 2:r=p;g=v;b=t;break;case 3:r=p;g=q;b=v;break;case 4:r=t;g=p;b=v;break;case 5:r=v;g=p;b=q;break}return{r,g,b}}
+function splat(x,y,dx,dy,color){splP.bind();gl.uniform1i(splP.u.uTarget,vel.read.attach(0));gl.uniform1f(splP.u.aspectRatio,canvas.width/canvas.height);gl.uniform2f(splP.u.point,x,y);gl.uniform3f(splP.u.color,dx,dy,0);let r=C.SR2/100;if(canvas.width>canvas.height)r*=canvas.width/canvas.height;gl.uniform1f(splP.u.radius,r);blit(vel.write);vel.swap();gl.uniform1i(splP.u.uTarget,dye.read.attach(0));gl.uniform3f(splP.u.color,color.r,color.g,color.b);blit(dye.write);dye.swap()}
+function spP(p){splat(p.tx,p.ty,p.dx*C.SF,p.dy*C.SF,p.color)}
+function clkS(p){const c=gC();c.r*=3;c.g*=3;c.b*=3;splat(p.tx,p.ty,4*(Math.random()-.5),12*(Math.random()-.5),c)}
+function step(dt){gl.disable(gl.BLEND);curP.bind();gl.uniform2f(curP.u.texelSize,vel.tsX,vel.tsY);gl.uniform1i(curP.u.uVelocity,vel.read.attach(0));blit(cur);vorP.bind();gl.uniform2f(vorP.u.texelSize,vel.tsX,vel.tsY);gl.uniform1i(vorP.u.uVelocity,vel.read.attach(0));gl.uniform1i(vorP.u.uCurl,cur.attach(1));gl.uniform1f(vorP.u.curl,C.CU);gl.uniform1f(vorP.u.dt,dt);blit(vel.write);vel.swap();divP.bind();gl.uniform2f(divP.u.texelSize,vel.tsX,vel.tsY);gl.uniform1i(divP.u.uVelocity,vel.read.attach(0));blit(div);clrP.bind();gl.uniform1i(clrP.u.uTexture,pres.read.attach(0));gl.uniform1f(clrP.u.value,C.PR);blit(pres.write);pres.swap();preP.bind();gl.uniform2f(preP.u.texelSize,vel.tsX,vel.tsY);gl.uniform1i(preP.u.uDivergence,div.attach(0));for(let i=0;i<C.PI;i++){gl.uniform1i(preP.u.uPressure,pres.read.attach(1));blit(pres.write);pres.swap()}gsbP.bind();gl.uniform2f(gsbP.u.texelSize,vel.tsX,vel.tsY);gl.uniform1i(gsbP.u.uPressure,pres.read.attach(0));gl.uniform1i(gsbP.u.uVelocity,vel.read.attach(1));blit(vel.write);vel.swap();advP.bind();gl.uniform2f(advP.u.texelSize,vel.tsX,vel.tsY);let vid=vel.read.attach(0);gl.uniform1i(advP.u.uVelocity,vid);gl.uniform1i(advP.u.uSource,vid);gl.uniform1f(advP.u.dt,dt);gl.uniform1f(advP.u.dissipation,C.VD);blit(vel.write);vel.swap();gl.uniform1i(advP.u.uVelocity,vel.read.attach(0));gl.uniform1i(advP.u.uSource,dye.read.attach(1));gl.uniform1f(advP.u.dissipation,C.DD);blit(dye.write);dye.swap()}
+function render(target){gl.blendFunc(gl.ONE,gl.ONE_MINUS_SRC_ALPHA);gl.enable(gl.BLEND);dd(target)}
+function dd(target){let w=target==null?gl.drawingBufferWidth:target.width,h=target==null?gl.drawingBufferHeight:target.height;dspM.bind();if(C.SH)gl.uniform2f(dspM.u.texelSize,1/w,1/h);gl.uniform1i(dspM.u.uTexture,dye.read.attach(0));blit(target)}
+function uC(dt){cut+=dt*C.CUS;if(cut>=1){cut=0;pts.forEach(p=>{p.color=gC()})}}
+function aI(){pts.forEach(p=>{if(p.moved){p.moved=false;spP(p)}})}
+function rC(){let w=sPR(canvas.clientWidth),h=sPR(canvas.clientHeight);if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;return true}return false}
+function uF(){const dt=Math.min((Date.now()-lu)/1000,0.016666);lu=Date.now();if(rC())iFB();uC(dt);aI();step(dt);render(null);requestAnimationFrame(uF)}
+function uPD(p,id,x,y){p.id=id;p.down=true;p.moved=false;p.tx=x/canvas.width;p.ty=1-y/canvas.height;p.ptx=p.tx;p.pty=p.ty;p.dx=0;p.dy=0;p.color=gC()}
+function uPM(p,x,y,color){p.ptx=p.tx;p.pty=p.ty;p.tx=x/canvas.width;p.ty=1-y/canvas.height;let a=canvas.width/canvas.height;p.dx=a<1?(p.tx-p.ptx)*a:(p.tx-p.ptx);p.dy=a>1?(p.ty-p.pty)/a:(p.ty-p.pty);p.moved=Math.abs(p.dx)>0||Math.abs(p.dy)>0;p.color=color}
+window.addEventListener('mousedown',e=>{let p=pts[0];uPD(p,-1,sPR(e.clientX),sPR(e.clientY));clkS(p)});
+window.addEventListener('mousemove',e=>{let p=pts[0];let px=sPR(e.clientX),py=sPR(e.clientY);if(!p.color[0]&&!p.color[1]&&!p.color[2])p.color=gC();uPM(p,px,py,p.color)});
+window.addEventListener('touchstart',e=>{let p=pts[0];const t=e.targetTouches;for(let i=0;i<t.length;i++)uPD(p,t[i].identifier,sPR(t[i].clientX),sPR(t[i].clientY))});
+window.addEventListener('touchmove',e=>{let p=pts[0];const t=e.targetTouches;for(let i=0;i<t.length;i++)uPM(p,sPR(t[i].clientX),sPR(t[i].clientY),p.color)},{passive:false});
+window.addEventListener('touchend',()=>{pts[0].down=false});
+uF();
+})();
 </script>
 </body>
 </html>
