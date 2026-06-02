@@ -937,10 +937,10 @@ requestAnimationFrame(animDust);
 
 // ===== PAPER SOUND ENGINE =====
 const AC=window.AudioContext||window.webkitAudioContext;let actx=null,pb=null;
-function ctx(){if(!actx)actx=new AC();return actx}
+function ctx(){if(!actx)actx=new AC();if(actx.state==='suspended')actx.resume();return actx}
 fetch('sound/liecio-crumping-paper-109585.mp3').then(r=>r.arrayBuffer()).then(b=>ctx().decodeAudioData(b)).then(b=>{pb=b}).catch(()=>{})
 function playPaper(v=.06,r=1){
-  const a=ctx();
+  const a=ctx();if(a.state==='suspended')a.resume();
   if(pb){const s=a.createBufferSource();s.buffer=pb;s.playbackRate.value=r+.2*Math.random();const g=a.createGain();g.gain.value=v;s.connect(g);g.connect(a.destination);s.start();return}
   const buf=a.createBuffer(1,a.sampleRate*.04,a.sampleRate),d=buf.getChannelData(0);
   for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/(a.sampleRate*.008));
@@ -948,9 +948,9 @@ function playPaper(v=.06,r=1){
   const g=a.createGain();g.gain.setValueAtTime(v,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+.04);
   src.connect(bp);bp.connect(g);g.connect(a.destination);src.start();src.stop(a.currentTime+.04)
 }
-document.addEventListener('click',e=>{if(e.target.closest('.page-card,.stamp,.hero-stat,.btn,.cc-item'))playPaper(.05,.9)})
-document.addEventListener('click',e=>{if(e.target.closest('.work-card-sel,.play-button,.platform-item'))playPaper(.06,.85)})
-document.querySelectorAll('.page-card,.stamp,.hero-stat,.btn,.cc-item,.work-card-sel,.play-button,.platform-item').forEach(el=>{el.addEventListener('mouseenter',()=>playPaper(.02,1.3))})
+document.addEventListener('click',e=>{if(e.target.closest('.page-card,.stamp,.hero-stat,.btn,.cc-item'))playPaper(.04,.9)})
+document.addEventListener('click',e=>{if(e.target.closest('.work-card-sel,.play-button,.platform-item'))playPaper(.05,.85)})
+if(!('ontouchstart' in window)){document.querySelectorAll('.page-card,.stamp,.hero-stat,.btn,.cc-item,.work-card-sel,.play-button,.platform-item').forEach(el=>{el.addEventListener('mouseenter',()=>playPaper(.02,1.3))})}
 
 // ===== EXPANDABLE CARDS =====
 function toggleCard(card){
@@ -1030,7 +1030,8 @@ function openActiveWork(){
   workVideo.muted=false;
   if(workVideo.paused){workVideo.play()}else{workVideo.pause()}
 }
-workPlayer.addEventListener('click',e=>{if(e.target===workPlayer||e.target.classList.contains('player-sky')||e.target.classList.contains('player-scene'))openActiveWork()})
+workPlayer.addEventListener('click',e=>{if(e.target===workPlayer||e.target===playBtn||e.target.closest('.play-button')||e.target.classList.contains('player-sky')||e.target.classList.contains('player-scene'))openActiveWork()})
+workPlayer.addEventListener('touchend',e=>{if(e.target===workPlayer||e.target===playBtn||e.target.closest('.play-button')){e.preventDefault();openActiveWork()}})
 workVideo.addEventListener('play',()=>{playBtn.textContent='⏸';workPlayer.classList.add('playing')})
 workVideo.addEventListener('pause',()=>{playBtn.textContent='▶';workPlayer.classList.remove('playing')})
 workVideo.addEventListener('loadedmetadata',()=>{
